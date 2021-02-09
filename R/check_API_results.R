@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-#' requete <- httr::GET("https://api.punkapi.com/v2/beers/3")
+#' requete <- httr::GET("http://www.google.com")
 #' check_API_results(requete = requete)
 check_API_results <- function(requete) {
   assert_that(

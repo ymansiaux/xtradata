@@ -7,3 +7,8 @@ usethis::use_pipe()
 
 usethis::use_package("httr")
 usethis::use_package("assertthat")
+
+usethis::use_testthat()
+
+usethis::use_test(name = "check_internet")
+usethis::use_test(name = "check_API_results")
