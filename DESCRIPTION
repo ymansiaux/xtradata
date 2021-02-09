@@ -28,5 +28,6 @@ Imports:
     assertthat,
     glue,
     purrr,
-    jsonlite
+    jsonlite,
+    curl
 Config/testthat/edition: 3

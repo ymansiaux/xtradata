@@ -46,28 +46,42 @@ list("type" = "BOUCLE",
       '$gt' = "2020-01-01T08:00:00"
  )
 )
-attributes <- c("cdate", "mdate")
+
+
 filterJSON <-
 '{
+
 "type": "BOUCLE",
 "mdate": {
   "$gt": "2020-01-01T08:00:00"
  }
 }
 '
+
+attributes <- c("cdate", "mdate")
 attributesArray <- '["cdate", "mdate"]'
+
+# 2 façons d'utiliser le paramètre filter
 xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
 filter = filter)
 xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
 filter = filterJSON)
+
+# 2 façons d'utiliser le paramètre attributes
 xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
 filter = filter, attributes = attributes)
 xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
 filter = filter, attributes = attributesArray)
+
+# limitation de la requete au 10 premiers resultats
 xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
-filter = filter, attributes = attributes, maxfeatures = 10)
-xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
-filter = filter, attributes = attributesArray, maxfeatures = 10)
+maxfeatures = 10)
 
 }
+
+}
+\references{
+http://data.bordeaux-metropole.fr/geojson/help/
+
+https://data.bordeaux-metropole.fr/dicopub/#/dico
 }
