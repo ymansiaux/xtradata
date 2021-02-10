@@ -32,42 +32,49 @@
 #'
 #' @examples \dontrun{
 #' # appel sur la couche PC_CAPTE_P
-#' filter <-
-#'list("type" = "BOUCLE",
-#'  "mdate" = list(
-#'       '$gt' = "2020-01-01T08:00:00"
-#'  )
-#')
-#'
-#'
+#'filter <- list("type" = "BOUCLE",
+#'                "mdate" = list(
+#'               '$gt' = "2020-01-01T08:00:00"
+#'                )
+#'              )
+
+
 #'filterJSON <-
-#' '{
+#'  '{
 #'
-#' "type": "BOUCLE",
+#'"type": "BOUCLE",
 #' "mdate": {
 #'   "$gt": "2020-01-01T08:00:00"
 #'  }
 #'}
 #''
-#'
-#' attributes <- c("cdate", "mdate")
-#' attributesArray <- '["cdate", "mdate"]'
-#'
-#' # 2 façons d'utiliser le paramètre filter
-#'xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
-#'filter = filter)
-#'xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
-#'filter = filterJSON)
-#'
-#' # 2 façons d'utiliser le paramètre attributes
-#'xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
-#'filter = filter, attributes = attributes)
-#'xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
-#'filter = filter, attributes = attributesArray)
-#'
-#' # limitation de la requete au 10 premiers resultats
-#'xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
-#'maxfeatures = 10)
+
+#'attributes <- list("cdate", "mdate")
+#'attributesArray <- '["cdate", "mdate"]'
+
+#'# 2 façons d'utiliser le paramètre filter
+#'res1 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+#'                                  filter = filter)
+
+#'res2 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+#'                                  filter = filterJSON)
+
+#'all.equal(res1, res2)
+
+#'# 2 façons d'utiliser le paramètre attributes
+#'res3 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+#'                                  filter = filter, attributes = attributes)
+
+#'res4 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+#'        filter = filter, attributes = attributesArray)
+
+#'all.equal(res3, res4)
+
+#'# limitation de la requete au 10 premiers resultats
+#'res5 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+#'                                  maxfeatures = 10)
+
+#'nrow(res5)
 #'
 #' }
 #'
@@ -119,6 +126,43 @@ xtradata_requete_features <- function(key = NULL,
   return(fromJSON(response, flatten = TRUE)$features)
 
 }
+
+
+
+# filter <- list("type" = "BOUCLE", "mdate" = list( '$gt' =
+# "2020-01-01T08:00:00" ) )
+#
+#
+# filterJSON <- '{
+#
+# "type": "BOUCLE", "mdate": { "$gt": "2020-01-01T08:00:00" } } '
+#
+# attributes <- list("cdate", "mdate") attributesArray <- '["cdate", "mdate"]'
+#
+# # 2 façons d'utiliser le paramètre filter res1 <-
+# xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle, filter =
+# filter)
+#
+# res2 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+# filter = filterJSON)
+#
+# all.equal(res1, res2)
+#
+# # 2 façons d'utiliser le paramètre attributes res3 <-
+# xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle, filter =
+# filter, attributes = attributes)
+#
+# res4 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+# filter = filter, attributes = attributesArray)
+#
+# all.equal(res3, res4)
+#
+# # limitation de la requete au 10 premiers resultats res5 <-
+# xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle, maxfeatures =
+# 10)
+#
+# nrow(res5)
+
 
 
 
