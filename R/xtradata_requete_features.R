@@ -4,18 +4,18 @@
 #'
 #' @param typename Le nom de la couche (string)
 #'
-#' @param crs Système de coordonnées de sortie des géométries renvoyées par le serveur GeoJSON
-#' valeurs autorisées : epsg:4326, epsg:3945, epsg:2154, epsg:3857
+#' @param crs Système de coordonnees de sortie des geometries renvoyees par le serveur GeoJSON
+#' valeurs autorisees : epsg:4326, epsg:3945, epsg:2154, epsg:3857
 #'
-#' @param filter Filtres à appliquer sur les données. Format liste R ou format JSON (string). Voir exemples
+#' @param filter Filtres à appliquer sur les donnees. Format liste R ou format JSON (string). Voir exemples
 #'
-#' @param attributes Liste des noms des attributs de la couche à retourner en résultat.
-#'  Afin d'accélérer les traitements, listez uniquement les attributs que vous sont nécessaires.
-#'  Si non précisé, tous les attributs seront retournés.
+#' @param attributes Liste des noms des attributs de la couche à retourner en resultat.
+#'  Afin d'accelerer les traitements, listez uniquement les attributs que vous sont necessaires.
+#'  Si non precise, tous les attributs seront retournes.
 #'  Format vecteur R ou format array (string). Voir exemples
 #'
 #' @param maxfeatures Nombre maximum d'enregistrement à retourner.
-#' Si 0 ou non précisé, tous les enregistrements de la couche seront retournés
+#' Si 0 ou non precise, tous les enregistrements de la couche seront retournes
 #'
 #' @return un data frame issu de la requête
 #' @export
@@ -32,42 +32,49 @@
 #'
 #' @examples \dontrun{
 #' # appel sur la couche PC_CAPTE_P
-#' filter <-
-#'list("type" = "BOUCLE",
-#'  "mdate" = list(
-#'       '$gt' = "2020-01-01T08:00:00"
-#'  )
-#')
-#'
-#'
+#'filter <- list("type" = "BOUCLE",
+#'                "mdate" = list(
+#'               '$gt' = "2020-01-01T08:00:00"
+#'                )
+#'              )
+
+
 #'filterJSON <-
-#' '{
+#'  '{
 #'
-#' "type": "BOUCLE",
+#'"type": "BOUCLE",
 #' "mdate": {
 #'   "$gt": "2020-01-01T08:00:00"
 #'  }
 #'}
 #''
-#'
-#' attributes <- c("cdate", "mdate")
-#' attributesArray <- '["cdate", "mdate"]'
-#'
-#' # 2 façons d'utiliser le paramètre filter
-#'xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
-#'filter = filter)
-#'xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
-#'filter = filterJSON)
-#'
-#' # 2 façons d'utiliser le paramètre attributes
-#'xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
-#'filter = filter, attributes = attributes)
-#'xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
-#'filter = filter, attributes = attributesArray)
-#'
-#' # limitation de la requete au 10 premiers resultats
-#'xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
-#'maxfeatures = 10)
+
+#'attributes <- list("cdate", "mdate")
+#'attributesArray <- '["cdate", "mdate"]'
+
+#'# 2 façons d'utiliser le paramètre filter
+#'res1 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+#'                                  filter = filter)
+
+#'res2 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+#'                                  filter = filterJSON)
+
+#'all.equal(res1, res2)
+
+#'# 2 façons d'utiliser le paramètre attributes
+#'res3 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+#'                                  filter = filter, attributes = attributes)
+
+#'res4 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+#'        filter = filter, attributes = attributesArray)
+
+#'all.equal(res3, res4)
+
+#'# limitation de la requete au 10 premiers resultats
+#'res5 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+#'                                  maxfeatures = 10)
+
+#'nrow(res5)
 #'
 #' }
 #'
@@ -80,7 +87,7 @@ xtradata_requete_features <- function(key = NULL,
   assert_that(!is.null(typename))
   assert_that(!is.null(key))
   assert_that(crs %in% c("epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"),
-              msg = 'Les valeurs de crs autorisées sont "epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"')
+              msg = 'Les valeurs de crs autorisees sont "epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"')
 
   check_internet()
 
@@ -119,6 +126,43 @@ xtradata_requete_features <- function(key = NULL,
   return(fromJSON(response, flatten = TRUE)$features)
 
 }
+
+
+
+# filter <- list("type" = "BOUCLE", "mdate" = list( '$gt' =
+# "2020-01-01T08:00:00" ) )
+#
+#
+# filterJSON <- '{
+#
+# "type": "BOUCLE", "mdate": { "$gt": "2020-01-01T08:00:00" } } '
+#
+# attributes <- list("cdate", "mdate") attributesArray <- '["cdate", "mdate"]'
+#
+# # 2 façons d'utiliser le paramètre filter res1 <-
+# xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle, filter =
+# filter)
+#
+# res2 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+# filter = filterJSON)
+#
+# all.equal(res1, res2)
+#
+# # 2 façons d'utiliser le paramètre attributes res3 <-
+# xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle, filter =
+# filter, attributes = attributes)
+#
+# res4 <- xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle,
+# filter = filter, attributes = attributesArray)
+#
+# all.equal(res3, res4)
+#
+# # limitation de la requete au 10 premiers resultats res5 <-
+# xtradata_requete_features(typename  = "PC_CAPTE_P", key = MaCle, maxfeatures =
+# 10)
+#
+# nrow(res5)
+
 
 
 
