@@ -4,18 +4,18 @@
 #'
 #' @param typename Le nom de la couche (string)
 #'
-#' @param crs Système de coordonnées de sortie des géométries renvoyées par le serveur GeoJSON
-#' valeurs autorisées : epsg:4326, epsg:3945, epsg:2154, epsg:3857
+#' @param crs Système de coordonnees de sortie des geometries renvoyees par le serveur GeoJSON
+#' valeurs autorisees : epsg:4326, epsg:3945, epsg:2154, epsg:3857
 #'
-#' @param filter Filtres à appliquer sur les données. Format liste R ou format JSON (string). Voir exemples
+#' @param filter Filtres à appliquer sur les donnees. Format liste R ou format JSON (string). Voir exemples
 #'
-#' @param attributes Liste des noms des attributs de la couche à retourner en résultat.
-#'  Afin d'accélérer les traitements, listez uniquement les attributs que vous sont nécessaires.
-#'  Si non précisé, tous les attributs seront retournés.
+#' @param attributes Liste des noms des attributs de la couche à retourner en resultat.
+#'  Afin d'accelerer les traitements, listez uniquement les attributs que vous sont necessaires.
+#'  Si non precise, tous les attributs seront retournes.
 #'  Format vecteur R ou format array (string). Voir exemples
 #'
 #' @param maxfeatures Nombre maximum d'enregistrement à retourner.
-#' Si 0 ou non précisé, tous les enregistrements de la couche seront retournés
+#' Si 0 ou non precise, tous les enregistrements de la couche seront retournes
 #'
 #' @return un data frame issu de la requête
 #' @export
@@ -87,7 +87,7 @@ xtradata_requete_features <- function(key = NULL,
   assert_that(!is.null(typename))
   assert_that(!is.null(key))
   assert_that(crs %in% c("epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"),
-              msg = 'Les valeurs de crs autorisées sont "epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"')
+              msg = 'Les valeurs de crs autorisees sont "epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"')
 
   check_internet()
 
