@@ -1,16 +1,33 @@
 Package: xtradata
-Title: What the Package Does (One Line, Title Case)
+Title: Interrogation des Webservices Xtradata
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    c(person(given = "Yohann",
+           family = "Mansiaux",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+           email = "y.mansiaux@bordeaux-metropole.fr"),
+    person(given = "Sebastien",
+           family = "Cart-Lamy",
+           role = c("aut"),
+           email = "s.cart-lamy@bordeaux-metropole.fr")
+           )
+Description: Permet de recuperer des donnees via les webservices Xtradata.
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Imports: 
+    magrittr,
+    httr,
+    assertthat,
+    glue,
+    purrr,
+    jsonlite,
+    curl
+Config/testthat/edition: 3
