@@ -40,6 +40,98 @@ un data frame issu de la requête
 \description{
 Renvoie les objets d'une couche (service features Xtradata)
 }
+\examples{
+\dontrun{
+# appel sur la couche PC_CAPTE_P
+filter <- list(
+  "type" = "BOUCLE",
+  "mdate" = list(
+    "$gt" = "2020-01-01T08:00:00"
+  )
+)
+
+
+filterJSON <- '{
+"type": "BOUCLE",
+"mdate": {
+  "$gt": "2020-01-01T08:00:00"
+ }
+}'
+
+# 2 façons d'utiliser le paramètre filter
+res1 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filter
+)
+
+res2 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filterJSON
+)
+
+all.equal(res1, res2)
+
+# 2 façons d'utiliser le paramètre attributes
+
+attributes <- list("cdate", "mdate")
+attributesArray <- '["cdate", "mdate"]'
+
+res3 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filter, attributes = attributes
+)
+
+res4 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filter, attributes = attributesArray
+)
+
+all.equal(res3, res4)
+
+# limitation de la requete au 10 premiers resultats
+res5 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  maxfeatures = 10
+)
+nrow(res5)
+
+
+# les filtres sur un meme champ doivent etre combines avec les operateurs
+# '$and', '$or', '$not'
+
+filterJSON_combined <- '{
+"$and": [
+ { "gid": {"$gte": "1"} },
+ { "gid": {"$lte": "5"} }
+]
+}'
+
+filter_combined <- list("$and" = list(
+  list("gid" = list(
+    "$gte" = "1"
+  )),
+
+  list("gid" = list(
+    "$lte" = "5"
+  ))
+))
+
+res6 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filterJSON_combined
+)
+
+res7 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filter_combined
+)
+
+all.equal(res6, res7)
+
+}
+
+
+}
 \references{
 http://data.bordeaux-metropole.fr/geojson/help/
 

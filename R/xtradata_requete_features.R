@@ -42,12 +42,12 @@
 #' )
 #'
 #'
-#' filterJSON <- '{#'
+#' filterJSON <- '{
 #' "type": "BOUCLE",
 #' "mdate": {
 #'   "$gt": "2020-01-01T08:00:00"
 #'  }
-#' }
+#' }'
 #'
 #' # 2 façons d'utiliser le paramètre filter
 #' res1 <- xtradata_requete_features(
@@ -120,6 +120,7 @@
 #' all.equal(res6, res7)
 #'
 #' }
+#'
 #'
 xtradata_requete_features <- function(key = NULL,
                                       typename = NULL,
