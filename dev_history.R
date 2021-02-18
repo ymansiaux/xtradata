@@ -26,3 +26,5 @@ usethis::use_test(name = "xtradata_requete_aggregate")
 devtools::check()
 devtools::build(vignettes = TRUE)
 devtools::install()
+
+pkgload::load_all()

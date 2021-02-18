@@ -35,6 +35,8 @@
 #'  Voir exemples et réferences
 #'
 #' @param filter Filtres à appliquer sur les données. Format liste R ou format JSON (string). Voir exemples
+#'
+#' @param showURL afficher l'url interrogee (boolean)
 
 #' @return un data frame issu de la requête
 #' @export
@@ -173,8 +175,38 @@
 #'res8
 #'
 #'all.equal(res7, res8)
-
-
+#'
+#'#' # les filtres sur un meme champ doivent etre combines avec les operateurs
+#' # '$and', '$or', '$not'
+#'
+#' filterJSON_combined <- '{
+#' "$and": [
+#'  { "gid": {"$gte": "1"} },
+#'  { "gid": {"$lte": "5"} }
+#' ]
+#' }'
+#'
+#' filter_combined <- list("$and" = list(
+#'   list("gid" = list(
+#'     "$gte" = "1"
+#'   )),
+#'
+#'   list("gid" = list(
+#'     "$lte" = "5"
+#'   ))
+#' ))
+#'
+#' res9 <- xtradata_requete_features(
+#'   typename = "ST_PARK_P", key = MaCle,
+#'   filter = filterJSON_combined,
+#' )
+#'
+#' res10 <- xtradata_requete_features(
+#'   typename = "ST_PARK_P", key = MaCle,
+#'   filter = filter_combined
+#' )
+#'
+#' all.equal(res9, res10)
 #' }
 #'
 xtradata_requete_aggregate <- function(key = NULL,
@@ -188,7 +220,8 @@ xtradata_requete_aggregate <- function(key = NULL,
                                          "publicHolidays" = FALSE
                                        ),
                                        attributes = NULL,
-                                       filter = NULL) {
+                                       filter = NULL,
+                                       showURL = FALSE) {
   assert_that(!is.null(typename))
   assert_that(!is.null(key))
   assert_that(!is.null(rangeStart))
@@ -223,6 +256,7 @@ xtradata_requete_aggregate <- function(key = NULL,
   params_encodes_pour_url <- glue_collapse(params_encodes_pour_url, sep = "", width = Inf, last = "")
 
   url <- glue("{base_url_xtradata_aggregate}{params_encodes_pour_url}")
+  if (showURL) print(url)
 
   request <- GET(url)
   check_API_results(request)

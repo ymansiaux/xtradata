@@ -14,6 +14,6 @@
 check_API_results <- function(requete) {
   assert_that(
     status_code(requete) == 200,
-    msg = "The API request returned an error"
+    msg = paste("The API request returned an error, API response code :", status_code(requete))
   )
 }

@@ -13,7 +13,8 @@ xtradata_requete_aggregate(
   rangeStep = NULL,
   rangeFilter = list(hours = 0:23, days = 1:7, publicHolidays = FALSE),
   attributes = NULL,
-  filter = NULL
+  filter = NULL,
+  showURL = FALSE
 )
 }
 \arguments{
@@ -51,6 +52,8 @@ Des paramètres additionnels peuvent également être utilisés. Dans ce cas for
 Voir exemples et réferences}
 
 \item{filter}{Filtres à appliquer sur les données. Format liste R ou format JSON (string). Voir exemples}
+
+\item{showURL}{afficher l'url interrogee (boolean)}
 }
 \value{
 un data frame issu de la requête
@@ -184,6 +187,38 @@ res7
 res8
 
 all.equal(res7, res8)
+
+#' # les filtres sur un meme champ doivent etre combines avec les operateurs
+# '$and', '$or', '$not'
+
+filterJSON_combined <- '{
+"$and": [
+ { "gid": {"$gte": "1"} },
+ { "gid": {"$lte": "5"} }
+]
+}'
+
+filter_combined <- list("$and" = list(
+  list("gid" = list(
+    "$gte" = "1"
+  )),
+
+  list("gid" = list(
+    "$lte" = "5"
+  ))
+))
+
+res9 <- xtradata_requete_features(
+  typename = "ST_PARK_P", key = MaCle,
+  filter = filterJSON_combined,
+)
+
+res10 <- xtradata_requete_features(
+  typename = "ST_PARK_P", key = MaCle,
+  filter = filter_combined
+)
+
+all.equal(res9, res10)
 }
 
 }
