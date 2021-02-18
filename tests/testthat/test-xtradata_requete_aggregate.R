@@ -184,3 +184,47 @@ test_that("Aggregate : passage de attributes en clé valeur en liste R et en jso
   expect_true(all.equal(res1, res2))
 
 })
+
+
+test_that("Aggregate : tests filtres combines dans filter", {
+
+  skip_if_not(curl::has_internet(), "Pas de connexion internet")
+
+  MaCle <- "DATAZBOUBB"
+
+  filterJSON_combined <- '{
+  "$and": [
+    { "total": {"$gte": 500} },
+    { "total": {"$lte": 1000} }
+  ]
+}'
+
+
+  filter_combined <- list("$and" = list(
+    list("total" = list(
+      "$gte" = 500
+    )),
+
+    list("total" = list(
+      "$lte" = 1000
+    ))
+  ))
+
+
+  res1 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
+                                     rangeStart = "2020-08-01",
+                                     rangeEnd = "2020-08-16",
+                                     filter = filterJSON_combined)
+
+  res2 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
+                                     rangeStart = "2021-01-01",
+                                     rangeEnd = "2021-01-16",
+                                     filter = filter_combined)
+
+  expect_gt(nrow(res1), 0)
+  expect_gt(nrow(res2), 0)
+  expect_equal(dim(res1), dim(res2))
+  expect_true(all.equal(res1, res2))
+
+})
+
