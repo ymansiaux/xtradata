@@ -1,6 +1,6 @@
 Package: xtradata
 Title: Interrogation des Webservices Xtradata
-Version: 0.0.0.9100
+Version: 0.0.0.9200
 Authors@R: 
     c(person(given = "Yohann",
            family = "Mansiaux",
