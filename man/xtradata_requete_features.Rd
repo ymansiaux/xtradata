@@ -11,6 +11,7 @@ xtradata_requete_features(
   filter = NULL,
   attributes = NULL,
   maxfeatures = NULL,
+  backintime = NULL,
   showURL = FALSE
 )
 }
@@ -31,6 +32,11 @@ Format vecteur R ou format array (string). Voir exemples}
 
 \item{maxfeatures}{Nombre maximum d'enregistrement à retourner.
 Si 0 ou non precise, tous les enregistrements de la couche seront retournes}
+
+\item{backintime}{Donne accès aux données de la couche sélectionnée à une date donnée.
+Ces données étant issues de l'historique stocké sur des bases NoSQL,
+certains attributs / valeurs peuvent différer du mode classique sans le paramètre backintime,
+issu du SQL. (date ou datetime)}
 
 \item{showURL}{afficher l'url interrogee (boolean)}
 }

@@ -17,6 +17,11 @@
 #' @param maxfeatures Nombre maximum d'enregistrement à retourner.
 #' Si 0 ou non precise, tous les enregistrements de la couche seront retournes
 #'
+#' @param backintime Donne accès aux données de la couche sélectionnée à une date donnée.
+#'  Ces données étant issues de l'historique stocké sur des bases NoSQL,
+#'  certains attributs / valeurs peuvent différer du mode classique sans le paramètre backintime,
+#'  issu du SQL. (date ou datetime)
+#'
 #' @param showURL afficher l'url interrogee (boolean)
 #'
 #' @return un data frame issu de la requête
@@ -128,6 +133,7 @@ xtradata_requete_features <- function(key = NULL,
                                       filter = NULL,
                                       attributes = NULL,
                                       maxfeatures = NULL,
+                                      backintime = NULL,
                                       showURL = FALSE) {
   assert_that(!is.null(typename))
   assert_that(!is.null(key))
@@ -146,7 +152,7 @@ xtradata_requete_features <- function(key = NULL,
   parametres_requete <- list(
     "key" = key, "crs" = crs,
     "filter" = filter, "attributes" = attributes,
-    "maxfeatures" = maxfeatures
+    "maxfeatures" = maxfeatures, "backintime" = backintime
   ) %>% compact()
 
   params_encodes_pour_url <- map2(parametres_requete, names(parametres_requete), function(param, param_name) {
@@ -172,3 +178,4 @@ xtradata_requete_features <- function(key = NULL,
 
   return(fromJSON(response, flatten = TRUE)$features)
 }
+
