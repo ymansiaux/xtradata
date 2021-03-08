@@ -43,7 +43,7 @@
 #'
 #' @importFrom assertthat assert_that is.string
 #' @importFrom glue glue glue_collapse
-#' @importFrom purrr map2 compact vec_depth
+#' @importFrom purrr map2 compact vec_depth map_chr
 #' @importFrom httr GET content
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom utils URLencode
@@ -263,6 +263,10 @@ xtradata_requete_aggregate <- function(key = NULL,
 
   response <- content(request, as = "text", encoding = "UTF-8")
 
-  return(fromJSON(response, flatten = TRUE)$features)
+  df <- fromJSON(response, flatten = TRUE)$features
+
+  colnames(df) <-  map_chr(colnames(df), ~gsub(x=  ., pattern = "properties.", replacement = ""))
+
+  return(df)
 
 }
