@@ -138,7 +138,7 @@ xtradata_requete_features <- function(key = NULL,
   assert_that(!is.null(typename))
   assert_that(!is.null(key))
   assert_that(crs %in% c("epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"),
-    msg = 'Les valeurs de crs autorisees sont "epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"'
+              msg = 'Les valeurs de crs autorisees sont "epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"'
   )
 
   check_internet()
@@ -178,8 +178,9 @@ xtradata_requete_features <- function(key = NULL,
 
   df <- fromJSON(response, flatten = TRUE)$features
 
-  colnames(df) <-  map_chr(colnames(df), ~gsub(x=  ., pattern = "properties.", replacement = ""))
-
+  if(length(df) > 0) {
+    colnames(df) <-  map_chr(colnames(df), ~gsub(x=  ., pattern = "properties.", replacement = ""))
+  }
   return(df)
 }
 

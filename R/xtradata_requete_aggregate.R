@@ -265,7 +265,9 @@ xtradata_requete_aggregate <- function(key = NULL,
 
   df <- fromJSON(response, flatten = TRUE)$features
 
-  colnames(df) <-  map_chr(colnames(df), ~gsub(x=  ., pattern = "properties.", replacement = ""))
+  if(length(df) > 0) {
+    colnames(df) <-  map_chr(colnames(df), ~gsub(x=  ., pattern = "properties.", replacement = ""))
+  }
 
   return(df)
 
