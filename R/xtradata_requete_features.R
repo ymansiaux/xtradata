@@ -171,7 +171,7 @@ xtradata_requete_features <- function(key = NULL,
   url <- glue("{base_url_xtradata_features}{params_encodes_pour_url}")
   if (showURL) print(url)
 
-  request <- GET(url)
+  request <- suppressWarnings(GET(url))
   check_API_results(request)
 
   response <- content(request, as = "text", encoding = "UTF-8")
