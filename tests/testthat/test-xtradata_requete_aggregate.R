@@ -217,8 +217,8 @@ test_that("Aggregate : tests filtres combines dans filter", {
                                      filter = filterJSON_combined)
 
   res2 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-                                     rangeStart = "2021-01-01",
-                                     rangeEnd = "2021-01-16",
+                                     rangeStart = "2020-08-01",
+                                     rangeEnd = "2020-08-16",
                                      filter = filter_combined)
 
   expect_gt(nrow(res1), 0)
