@@ -278,7 +278,17 @@ xtradata_requete_aggregate <- function(key = NULL,
       # on doit transformer les listes et les vecteurs, si ce n'est pas le cas pas besoin de passer en JSON
       parametre_encode <- param
     } else {
-      parametre_encode <- toJSON(param, auto_unbox = TRUE) %>% URLencode()
+      # cette partie va gérer les tableaux. 1er if : tableau de lg 1, 2eme if : tableau de lg >1
+      if(length(unlist(param)) == 1)  {
+
+        parametre_encode <- toJSON(param, auto_unbox = FALSE) %>% URLencode()
+
+      } else {
+
+        parametre_encode <- toJSON(param, auto_unbox = TRUE) %>% URLencode()
+
+      }
+
     }
 
     glue('&{param_name}={parametre_encode}')
@@ -301,7 +311,7 @@ xtradata_requete_aggregate <- function(key = NULL,
     colnames(df) <-  map_chr(colnames(df), ~gsub(x=  ., pattern = "properties.", replacement = ""))
   }
 
-  return(df)
+  return(as.data.frame(df))
 
 }
 
