@@ -134,6 +134,32 @@ res7 <- xtradata_requete_features(
 
 all.equal(res6, res7)
 
+# possibilite de fournir un tableau de donnees dans l'argument filter
+filter_and <- list(
+"gid" = list("$in" = c(50:55)
+)
+)
+
+
+filter_and_JSON <- '{
+"gid": {
+ "$in": [
+   50,51,52,53,54,55
+ ]
+}}'
+
+res8 <- xtradata_requete_features(
+typename = "PC_CAPTE_P", key = MaCle,
+filter = filter_and
+)
+
+res9 <- xtradata_requete_features(
+typename = "PC_CAPTE_P", key = MaCle,
+ filter = filter_and_JSON
+)
+
+all.equal(res8, res9)
+
 }
 
 
