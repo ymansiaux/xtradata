@@ -219,6 +219,37 @@ res10 <- xtradata_requete_features(
 )
 
 all.equal(res9, res10)
+
+
+# possibilite de fournir un tableau de donnees dans l'argument filter
+
+filter_and <- list(
+"gid" = list("$in" = c(247,593)
+)
+)
+
+
+filter_and_JSON <- '{
+"gid": {
+ "$in": [
+   247,593
+ ]
+}}'
+
+res11 <- xtradata_requete_aggregate(key = MaCle,
+                                   typename = "ST_PARK_P",
+                                   rangeStart = "2021-02-20", rangeEnd = "2021-02-21",
+                                   rangeStep = "hour",
+                                   attributes = list("gid", "libres", "total", "etat"),
+                                   filter = filter_and)
+
+res12 <- xtradata_requete_aggregate(key = MaCle,
+                                 typename = "ST_PARK_P",
+                                   rangeStart = "2021-02-20", rangeEnd = "2021-02-21",
+                                   rangeStep = "hour",
+                                   attributes = list("gid", "libres", "total", "etat"),
+                                   filter = filter_and_JSON)
+all.equal(res11, res12)
 }
 
 }
