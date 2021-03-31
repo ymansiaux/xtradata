@@ -4,9 +4,9 @@
 #' @export
 #' @importFrom curl has_internet
 #' @importFrom assertthat assert_that
-#' @examples check_internet()
+#' @examples
+#' check_internet()
 check_internet <- function() {
-
   assert_that(has_internet(), msg = "No Internet connexion was found")
 
   # requete <- GET("http://www.google.com")

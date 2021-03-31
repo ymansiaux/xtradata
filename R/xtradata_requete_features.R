@@ -37,7 +37,8 @@
 #' @references  http://data.bordeaux-metropole.fr/geojson/help/
 #' @references https://data.bordeaux-metropole.fr/dicopub/#/dico
 #'
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
 #' # appel sur la couche PC_CAPTE_P
 #' filter <- list(
 #'   "type" = "BOUCLE",
@@ -126,32 +127,29 @@
 #'
 #' # possibilite de fournir un tableau de donnees dans l'argument filter
 #' filter_and <- list(
-#'"gid" = list("$in" = c(50:55)
-#')
-#')
+#'   "gid" = list("$in" = c(50:55))
+#' )
 #'
 #'
-#'filter_and_JSON <- '{
-#'"gid": {
+#' filter_and_JSON <- '{
+#' "gid": {
 #'  "$in": [
 #'    50,51,52,53,54,55
 #'  ]
-#'}}'
+#' }}'
 #'
-#'res8 <- xtradata_requete_features(
-#'typename = "PC_CAPTE_P", key = MaCle,
-#'filter = filter_and
-#')
+#' res8 <- xtradata_requete_features(
+#'   typename = "PC_CAPTE_P", key = MaCle,
+#'   filter = filter_and
+#' )
 #'
-#'res9 <- xtradata_requete_features(
-#'typename = "PC_CAPTE_P", key = MaCle,
-#'  filter = filter_and_JSON
-#')
+#' res9 <- xtradata_requete_features(
+#'   typename = "PC_CAPTE_P", key = MaCle,
+#'   filter = filter_and_JSON
+#' )
 #'
-#'all.equal(res8, res9)
-#'
+#' all.equal(res8, res9)
 #' }
-#'
 #'
 xtradata_requete_features <- function(key = NULL,
                                       typename = NULL,
@@ -164,7 +162,7 @@ xtradata_requete_features <- function(key = NULL,
   assert_that(!is.null(typename))
   assert_that(!is.null(key))
   assert_that(crs %in% c("epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"),
-              msg = 'Les valeurs de crs autorisees sont "epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"'
+    msg = 'Les valeurs de crs autorisees sont "epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"'
   )
 
   check_internet()
@@ -183,24 +181,20 @@ xtradata_requete_features <- function(key = NULL,
   ) %>% compact()
 
   params_encodes_pour_url <- map2(parametres_requete, names(parametres_requete), function(param, param_name) {
-     # browser()
+    # browser()
     if (vec_depth(param) == 1 & length(param) == 1) {
       # on doit transformer les listes et les vecteurs, si ce n'est pas le cas pas besoin de passer en JSON
       parametre_encode <- param
     } else {
       # cette partie va gérer les tableaux. 1er if : tableau de lg 1, 2eme if : tableau de lg >1
-      if(length(unlist(param)) == 1)  {
-
+      if (length(unlist(param)) == 1) {
         parametre_encode <- toJSON(param, auto_unbox = FALSE) %>% URLencode()
-
       } else {
-
         parametre_encode <- toJSON(param, auto_unbox = TRUE) %>% URLencode()
       }
     }
 
     glue("&{param_name}={parametre_encode}")
-
   })
 
   params_encodes_pour_url <- glue_collapse(params_encodes_pour_url, sep = "", width = Inf, last = "")
@@ -215,8 +209,8 @@ xtradata_requete_features <- function(key = NULL,
 
   df <- fromJSON(response, flatten = TRUE)$features
 
-  if(length(df) > 0) {
-    colnames(df) <-  map_chr(colnames(df), ~gsub(x=  ., pattern = "properties.", replacement = ""))
+  if (length(df) > 0) {
+    colnames(df) <- map_chr(colnames(df), ~ gsub(x = ., pattern = "properties.", replacement = ""))
   }
   return(as.data.frame(df))
 }

@@ -3,6 +3,7 @@
 export("%>%")
 export(check_API_results)
 export(check_internet)
+export(get_API_error_code)
 export(xtradata_requete_aggregate)
 export(xtradata_requete_features)
 importFrom(assertthat,assert_that)

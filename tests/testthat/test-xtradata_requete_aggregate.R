@@ -1,14 +1,15 @@
-Sys.setlocale('LC_ALL','C')
+Sys.setlocale("LC_ALL", "C")
 test_that("Aggregate : passage de filter en liste R et en json resultats identiques", {
-
   skip_if_not(curl::has_internet(), "Pas de connexion internet")
 
   MaCle <- "DATAZBOUBB"
 
-  filter <- list("ident" = "CUBPK88",
-                 "etat" = "LIBRE",
-                 "libres" = list(
-                   '$gt' = 100)
+  filter <- list(
+    "ident" = "CUBPK88",
+    "etat" = "LIBRE",
+    "libres" = list(
+      "$gt" = 100
+    )
   )
 
   filterJSON <- '{
@@ -19,17 +20,21 @@ test_that("Aggregate : passage de filter en liste R et en json resultats identiq
   }
   }'
 
-  res1 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-                                     rangeStart = "2020-08-01",
-                                     rangeEnd = "2020-08-16",
-                                     rangeStep = "hour",
-                                     filter = filter)
+  res1 <- xtradata_requete_aggregate(
+    typename = "ST_PARK_P", key = MaCle,
+    rangeStart = "2020-08-01",
+    rangeEnd = "2020-08-16",
+    rangeStep = "hour",
+    filter = filter
+  )
 
-  res2 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-                                     rangeStart = "2020-08-01",
-                                     rangeEnd = "2020-08-16",
-                                     rangeStep = "hour",
-                                     filter = filterJSON)
+  res2 <- xtradata_requete_aggregate(
+    typename = "ST_PARK_P", key = MaCle,
+    rangeStart = "2020-08-01",
+    rangeEnd = "2020-08-16",
+    rangeStep = "hour",
+    filter = filterJSON
+  )
 
 
 
@@ -37,28 +42,29 @@ test_that("Aggregate : passage de filter en liste R et en json resultats identiq
   expect_gt(nrow(res2), 0)
   expect_equal(dim(res1), dim(res2))
   expect_true(all.equal(res1, res2))
-
 })
 
 
 
 test_that("Aggregate : passage de rangeFilter en liste R et en json resultats identiques", {
-
   skip_if_not(curl::has_internet(), "Pas de connexion internet")
 
   MaCle <- "DATAZBOUBB"
 
-  filter <- list("ident" = "CUBPK88",
-                 "etat" = "LIBRE",
-                 "libres" = list(
-                   '$gt' = 100)
+  filter <- list(
+    "ident" = "CUBPK88",
+    "etat" = "LIBRE",
+    "libres" = list(
+      "$gt" = 100
+    )
   )
 
-  rangeFilter <- list("hours" = 5:6,
-                       "days" = 1:7,
-                       "publicHolidays" = FALSE
-                        )
-   rangeFilterJSON <- '{
+  rangeFilter <- list(
+    "hours" = 5:6,
+    "days" = 1:7,
+    "publicHolidays" = FALSE
+  )
+  rangeFilterJSON <- '{
      "hours": [
        5,6
      ],
@@ -68,21 +74,25 @@ test_that("Aggregate : passage de rangeFilter en liste R et en json resultats id
      "publicHolidays": false
    }'
 
-   res1 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-                                      rangeStart = "2020-08-01",
-                                      rangeEnd = "2020-08-16",
-                                      rangeStep = "hour",
-                                      rangeFilter = rangeFilter,
-                                      attributes = list("gid", "libres", "total", "etat", "ident"),
-                                      filter = filter)
+  res1 <- xtradata_requete_aggregate(
+    typename = "ST_PARK_P", key = MaCle,
+    rangeStart = "2020-08-01",
+    rangeEnd = "2020-08-16",
+    rangeStep = "hour",
+    rangeFilter = rangeFilter,
+    attributes = list("gid", "libres", "total", "etat", "ident"),
+    filter = filter
+  )
 
-   res2 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-                                      rangeStart = "2020-08-01",
-                                      rangeEnd = "2020-08-16",
-                                      rangeStep = "hour",
-                                      rangeFilter = rangeFilterJSON,
-                                      attributes = list("gid", "libres", "total", "etat", "ident"),
-                                      filter = filter)
+  res2 <- xtradata_requete_aggregate(
+    typename = "ST_PARK_P", key = MaCle,
+    rangeStart = "2020-08-01",
+    rangeEnd = "2020-08-16",
+    rangeStep = "hour",
+    rangeFilter = rangeFilterJSON,
+    attributes = list("gid", "libres", "total", "etat", "ident"),
+    filter = filter
+  )
 
 
 
@@ -90,71 +100,77 @@ test_that("Aggregate : passage de rangeFilter en liste R et en json resultats id
   expect_gt(nrow(res2), 0)
   expect_equal(dim(res1), dim(res2))
   expect_true(all.equal(res1, res2))
-
 })
 
 
 
 test_that("Aggregate : passage de attributes en vecteur R et en array resultats identiques", {
-
   skip_if_not(curl::has_internet(), "Pas de connexion internet")
 
   MaCle <- "DATAZBOUBB"
 
-  filter <- list("ident" = "CUBPK88",
-                 "etat" = "LIBRE",
-                 "libres" = list(
-                   '$gt' = 100)
+  filter <- list(
+    "ident" = "CUBPK88",
+    "etat" = "LIBRE",
+    "libres" = list(
+      "$gt" = 100
+    )
   )
 
-  rangeFilter <- list("hours" = 5:6,
-                      "days" = 1:7,
-                      "publicHolidays" = FALSE
+  rangeFilter <- list(
+    "hours" = 5:6,
+    "days" = 1:7,
+    "publicHolidays" = FALSE
   )
 
 
   attributes <- list("gid", "libres")
   attributesArray <- '["gid", "libres"]'
 
-  res1 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-                                     rangeStart = "2020-08-01",
-                                     rangeEnd = "2020-08-16",
-                                     rangeStep = "hour",
-                                     rangeFilter = rangeFilter,
-                                     attributes = attributes,
-                                     filter = filter)
+  res1 <- xtradata_requete_aggregate(
+    typename = "ST_PARK_P", key = MaCle,
+    rangeStart = "2020-08-01",
+    rangeEnd = "2020-08-16",
+    rangeStep = "hour",
+    rangeFilter = rangeFilter,
+    attributes = attributes,
+    filter = filter
+  )
 
-  res2 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-                                     rangeStart = "2020-08-01",
-                                     rangeEnd = "2020-08-16",
-                                     rangeStep = "hour",
-                                     rangeFilter = rangeFilter,
-                                     attributes = attributesArray,
-                                     filter = filter)
+  res2 <- xtradata_requete_aggregate(
+    typename = "ST_PARK_P", key = MaCle,
+    rangeStart = "2020-08-01",
+    rangeEnd = "2020-08-16",
+    rangeStep = "hour",
+    rangeFilter = rangeFilter,
+    attributes = attributesArray,
+    filter = filter
+  )
 
   expect_gt(nrow(res1), 0)
   expect_gt(nrow(res2), 0)
   expect_equal(dim(res1), dim(res2))
   expect_true(all.equal(res1, res2))
-
 })
 
 
 test_that("Aggregate : passage de attributes en clé valeur en liste R et en json resultats identiques", {
-
   skip_if_not(curl::has_internet(), "Pas de connexion internet")
 
   MaCle <- "DATAZBOUBB"
 
-  filter <- list("ident" = "CUBPK88",
-                 "etat" = "LIBRE",
-                 "libres" = list(
-                   '$gt' = 100)
+  filter <- list(
+    "ident" = "CUBPK88",
+    "etat" = "LIBRE",
+    "libres" = list(
+      "$gt" = 100
+    )
   )
 
-  rangeFilter <- list("hours" = 5:6,
-                      "days" = 1:7,
-                      "publicHolidays" = FALSE
+  rangeFilter <- list(
+    "hours" = 5:6,
+    "days" = 1:7,
+    "publicHolidays" = FALSE
   )
 
 
@@ -162,32 +178,34 @@ test_that("Aggregate : passage de attributes en clé valeur en liste R et en jso
   attributes_key_value_JSON <- '{"gid" : "first", "libres" : "max"}'
 
 
-  res1 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-                                     rangeStart = "2020-08-01",
-                                     rangeEnd = "2020-08-16",
-                                     rangeStep = "hour",
-                                     rangeFilter = rangeFilter,
-                                     attributes = attributes_key_value_list,
-                                     filter = filter)
+  res1 <- xtradata_requete_aggregate(
+    typename = "ST_PARK_P", key = MaCle,
+    rangeStart = "2020-08-01",
+    rangeEnd = "2020-08-16",
+    rangeStep = "hour",
+    rangeFilter = rangeFilter,
+    attributes = attributes_key_value_list,
+    filter = filter
+  )
 
-  res2 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-                                     rangeStart = "2020-08-01",
-                                     rangeEnd = "2020-08-16",
-                                     rangeStep = "hour",
-                                     rangeFilter = rangeFilter,
-                                     attributes = attributes_key_value_JSON,
-                                     filter = filter)
+  res2 <- xtradata_requete_aggregate(
+    typename = "ST_PARK_P", key = MaCle,
+    rangeStart = "2020-08-01",
+    rangeEnd = "2020-08-16",
+    rangeStep = "hour",
+    rangeFilter = rangeFilter,
+    attributes = attributes_key_value_JSON,
+    filter = filter
+  )
 
   expect_gt(nrow(res1), 0)
   expect_gt(nrow(res2), 0)
   expect_equal(dim(res1), dim(res2))
   expect_true(all.equal(res1, res2))
-
 })
 
 
 test_that("Aggregate : tests filtres combines dans filter", {
-
   skip_if_not(curl::has_internet(), "Pas de connexion internet")
 
   MaCle <- "DATAZBOUBB"
@@ -211,20 +229,22 @@ test_that("Aggregate : tests filtres combines dans filter", {
   ))
 
 
-  res1 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-                                     rangeStart = "2020-08-01",
-                                     rangeEnd = "2020-08-16",
-                                     filter = filterJSON_combined)
+  res1 <- xtradata_requete_aggregate(
+    typename = "ST_PARK_P", key = MaCle,
+    rangeStart = "2020-08-01",
+    rangeEnd = "2020-08-16",
+    filter = filterJSON_combined
+  )
 
-  res2 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-                                     rangeStart = "2020-08-01",
-                                     rangeEnd = "2020-08-16",
-                                     filter = filter_combined)
+  res2 <- xtradata_requete_aggregate(
+    typename = "ST_PARK_P", key = MaCle,
+    rangeStart = "2020-08-01",
+    rangeEnd = "2020-08-16",
+    filter = filter_combined
+  )
 
   expect_gt(nrow(res1), 0)
   expect_gt(nrow(res2), 0)
   expect_equal(dim(res1), dim(res2))
   expect_true(all.equal(res1, res2))
-
 })
-
