@@ -51,36 +51,43 @@
 #' @references  http://data.bordeaux-metropole.fr/geojson/help/
 #' @references https://data.bordeaux-metropole.fr/dicopub/#/dico
 #'
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
 #' # appel sur la couche ST_PARK_P
 #'
 #' # 2 façons d'utiliser le paramètre filter
 #'
-#' filter <- list("ident" = "CUBPK88",
-#'    "etat" = "LIBRE",
-#'                 "libres" = list(
-#'                   '$gt' = 100)
+#' filter <- list(
+#'   "ident" = "CUBPK88",
+#'   "etat" = "LIBRE",
+#'   "libres" = list(
+#'     "$gt" = 100
+#'   )
 #' )
 #'
 #' filterJSON <- '{
-#'"ident": "CUBPK88",
-#'"etat" : "LIBRE",
-#'"libres": {
+#' "ident": "CUBPK88",
+#' "etat" : "LIBRE",
+#' "libres": {
 #'  "$gt": 100
-#'}
-#'}'
+#' }
+#' }'
 #'
-#' res1 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-#'                                    rangeStart = "2020-08-01",
-#'                                    rangeEnd = "2020-08-16",
-#'                                    rangeStep = "hour",
-#'                                    filter = filter)
+#' res1 <- xtradata_requete_aggregate(
+#'   typename = "ST_PARK_P", key = MaCle,
+#'   rangeStart = "2020-08-01",
+#'   rangeEnd = "2020-08-16",
+#'   rangeStep = "hour",
+#'   filter = filter
+#' )
 #'
-#' res2 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-#'                                    rangeStart = "2020-08-01",
-#'                                    rangeEnd = "2020-08-16",
-#'                                    rangeStep = "hour",
-#'                                    filter = filterJSON)
+#' res2 <- xtradata_requete_aggregate(
+#'   typename = "ST_PARK_P", key = MaCle,
+#'   rangeStart = "2020-08-01",
+#'   rangeEnd = "2020-08-16",
+#'   rangeStep = "hour",
+#'   filter = filterJSON
+#' )
 #'
 #'
 #' all.equal(res1, res2)
@@ -88,10 +95,11 @@
 #'
 #' # 2 façons d'utiliser le paramètre rangeFilter
 #'
-#' rangeFilter <- list("hours" = 5:6,
-#'                     "days" = 1:7,
-#'                     "publicHolidays" = FALSE
-#'                      )
+#' rangeFilter <- list(
+#'   "hours" = 5:6,
+#'   "days" = 1:7,
+#'   "publicHolidays" = FALSE
+#' )
 #' rangeFilterJSON <- '{
 #'   "hours": [
 #'     5,6
@@ -102,21 +110,25 @@
 #'   "publicHolidays": false
 #' }'
 #'
-#' res3 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-#'                                    rangeStart = "2020-08-01",
-#'                                    rangeEnd = "2020-08-16",
-#'                                    rangeStep = "hour",
-#'                                    rangeFilter = rangeFilter,
-#'                                    attributes = list("gid", "libres", "total", "etat", "ident"),
-#'                                    filter = filter)
+#' res3 <- xtradata_requete_aggregate(
+#'   typename = "ST_PARK_P", key = MaCle,
+#'   rangeStart = "2020-08-01",
+#'   rangeEnd = "2020-08-16",
+#'   rangeStep = "hour",
+#'   rangeFilter = rangeFilter,
+#'   attributes = list("gid", "libres", "total", "etat", "ident"),
+#'   filter = filter
+#' )
 #'
-#' res4 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-#'                                    rangeStart = "2020-08-01",
-#'                                    rangeEnd = "2020-08-16",
-#'                                    rangeStep = "hour",
-#'                                    rangeFilter = rangeFilterJSON,
-#'                                    attributes = list("gid", "libres", "total", "etat", "ident"),
-#'                                    filter = filter)
+#' res4 <- xtradata_requete_aggregate(
+#'   typename = "ST_PARK_P", key = MaCle,
+#'   rangeStart = "2020-08-01",
+#'   rangeEnd = "2020-08-16",
+#'   rangeStep = "hour",
+#'   rangeFilter = rangeFilterJSON,
+#'   attributes = list("gid", "libres", "total", "etat", "ident"),
+#'   filter = filter
+#' )
 #'
 #'
 #' all.equal(res3, res4)
@@ -127,56 +139,64 @@
 #' attributes <- list("gid", "libres")
 #' attributesArray <- '["gid", "libres"]'
 #'
-#'res5 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-#'                                   rangeStart = "2020-08-01",
-#'                                   rangeEnd = "2020-08-16",
-#'                                   rangeStep = "hour",
-#'                                   rangeFilter = rangeFilterJSON,
-#'                                   attributes = attributes,
-#'                                 filter = filter)
+#' res5 <- xtradata_requete_aggregate(
+#'   typename = "ST_PARK_P", key = MaCle,
+#'   rangeStart = "2020-08-01",
+#'   rangeEnd = "2020-08-16",
+#'   rangeStep = "hour",
+#'   rangeFilter = rangeFilterJSON,
+#'   attributes = attributes,
+#'   filter = filter
+#' )
 #'
 #'
-#'res6 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-#'                                   rangeStart = "2020-08-01",
-#'                                   rangeEnd = "2020-08-16",
-#'                                   rangeStep = "hour",
-#'                                   rangeFilter = rangeFilterJSON,
-#'                                   attributes = attributesArray,
-#'                                   filter = filter)
+#' res6 <- xtradata_requete_aggregate(
+#'   typename = "ST_PARK_P", key = MaCle,
+#'   rangeStart = "2020-08-01",
+#'   rangeEnd = "2020-08-16",
+#'   rangeStep = "hour",
+#'   rangeFilter = rangeFilterJSON,
+#'   attributes = attributesArray,
+#'   filter = filter
+#' )
 #'
 #'
-#'res5
-#'res6
+#' res5
+#' res6
 #'
-#'all.equal(res5, res6)
+#' all.equal(res5, res6)
 #'
-#'attributes_key_value_list <- list("gid" = "first", "libres" = "max")
-#'attributes_key_value_JSON <- '{"gid" : "first", "libres" : "max"}'
+#' attributes_key_value_list <- list("gid" = "first", "libres" = "max")
+#' attributes_key_value_JSON <- '{"gid" : "first", "libres" : "max"}'
 #'
-#'res7 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-#'                                   rangeStart = "2020-08-01",
-#'                                   rangeEnd = "2020-08-16",
-#'                                   rangeStep = "hour",
-#'                                   rangeFilter = rangeFilterJSON,
-#'                                   attributes = attributes_key_value_list,
-#'                                   filter = filter)
-#'
-#'
-#'res8 <- xtradata_requete_aggregate(typename  = "ST_PARK_P", key = MaCle,
-#'                                   rangeStart = "2020-08-01",
-#'                                   rangeEnd = "2020-08-16",
-#'                                   rangeStep = "hour",
-#'                                   rangeFilter = rangeFilterJSON,
-#'                                   attributes = attributes_key_value_JSON,
-#'                                   filter = filter)
+#' res7 <- xtradata_requete_aggregate(
+#'   typename = "ST_PARK_P", key = MaCle,
+#'   rangeStart = "2020-08-01",
+#'   rangeEnd = "2020-08-16",
+#'   rangeStep = "hour",
+#'   rangeFilter = rangeFilterJSON,
+#'   attributes = attributes_key_value_list,
+#'   filter = filter
+#' )
 #'
 #'
-#'res7
-#'res8
+#' res8 <- xtradata_requete_aggregate(
+#'   typename = "ST_PARK_P", key = MaCle,
+#'   rangeStart = "2020-08-01",
+#'   rangeEnd = "2020-08-16",
+#'   rangeStep = "hour",
+#'   rangeFilter = rangeFilterJSON,
+#'   attributes = attributes_key_value_JSON,
+#'   filter = filter
+#' )
 #'
-#'all.equal(res7, res8)
 #'
-#'#' # les filtres sur un meme champ doivent etre combines avec les operateurs
+#' res7
+#' res8
+#'
+#' all.equal(res7, res8)
+#'
+#' #' # les filtres sur un meme champ doivent etre combines avec les operateurs
 #' # '$and', '$or', '$not'
 #'
 #' filterJSON_combined <- '{
@@ -212,37 +232,40 @@
 #' # possibilite de fournir un tableau de donnees dans l'argument filter
 #'
 #' filter_and <- list(
-#'"gid" = list("$in" = c(247,593)
-#')
-#')
+#'   "gid" = list("$in" = c(247, 593))
+#' )
 #'
 #'
-#'filter_and_JSON <- '{
-#'"gid": {
+#' filter_and_JSON <- '{
+#' "gid": {
 #'  "$in": [
 #'    247,593
 #'  ]
-#'}}'
+#' }}'
 #'
-#'res11 <- xtradata_requete_aggregate(key = MaCle,
-#'                                    typename = "ST_PARK_P",
-#'                                    rangeStart = "2021-02-20", rangeEnd = "2021-02-21",
-#'                                    rangeStep = "hour",
-#'                                    attributes = list("gid", "libres", "total", "etat"),
-#'                                    filter = filter_and)
+#' res11 <- xtradata_requete_aggregate(
+#'   key = MaCle,
+#'   typename = "ST_PARK_P",
+#'   rangeStart = "2021-02-20", rangeEnd = "2021-02-21",
+#'   rangeStep = "hour",
+#'   attributes = list("gid", "libres", "total", "etat"),
+#'   filter = filter_and
+#' )
 #'
-#'res12 <- xtradata_requete_aggregate(key = MaCle,
-#'                                  typename = "ST_PARK_P",
-#'                                    rangeStart = "2021-02-20", rangeEnd = "2021-02-21",
-#'                                    rangeStep = "hour",
-#'                                    attributes = list("gid", "libres", "total", "etat"),
-#'                                    filter = filter_and_JSON)
-
-#'all.equal(res11, res12)
-#'}
+#' res12 <- xtradata_requete_aggregate(
+#'   key = MaCle,
+#'   typename = "ST_PARK_P",
+#'   rangeStart = "2021-02-20", rangeEnd = "2021-02-21",
+#'   rangeStep = "hour",
+#'   attributes = list("gid", "libres", "total", "etat"),
+#'   filter = filter_and_JSON
+#' )
+#'
+#' all.equal(res11, res12)
+#' }
 #'
 xtradata_requete_aggregate <- function(key = NULL,
-                                       typename  = NULL,
+                                       typename = NULL,
                                        rangeStart = NULL,
                                        rangeEnd = NULL,
                                        rangeStep = NULL,
@@ -261,38 +284,33 @@ xtradata_requete_aggregate <- function(key = NULL,
 
   check_internet()
 
-  base_url_xtradata_aggregate <-  glue("http://data.bordeaux-metropole.fr/geojson/aggregate/{typename}?")
+  base_url_xtradata_aggregate <- glue("http://data.bordeaux-metropole.fr/geojson/aggregate/{typename}?")
 
-  if(is.string(filter))   filter <- fromJSON(filter)
-  if(is.string(rangeFilter))   rangeFilter <- fromJSON(rangeFilter)
-  if(is.string(attributes))   attributes <- fromJSON(attributes)
+  if (is.string(filter)) filter <- fromJSON(filter)
+  if (is.string(rangeFilter)) rangeFilter <- fromJSON(rangeFilter)
+  if (is.string(attributes)) attributes <- fromJSON(attributes)
 
 
-  parametres_requete <- list("key" = key, "rangeStart" = rangeStart, "rangeEnd" = rangeEnd,
-                             "rangeStep" = rangeStep, "rangeFilter" = rangeFilter,
-                             "filter" = filter,  "attributes" = attributes) %>% compact()
+  parametres_requete <- list(
+    "key" = key, "rangeStart" = rangeStart, "rangeEnd" = rangeEnd,
+    "rangeStep" = rangeStep, "rangeFilter" = rangeFilter,
+    "filter" = filter, "attributes" = attributes
+  ) %>% compact()
 
   params_encodes_pour_url <- map2(parametres_requete, names(parametres_requete), function(param, param_name) {
-
-    if(vec_depth(param) == 1 & length(param) == 1) {
+    if (vec_depth(param) == 1 & length(param) == 1) {
       # on doit transformer les listes et les vecteurs, si ce n'est pas le cas pas besoin de passer en JSON
       parametre_encode <- param
     } else {
       # cette partie va gérer les tableaux. 1er if : tableau de lg 1, 2eme if : tableau de lg >1
-      if(length(unlist(param)) == 1)  {
-
+      if (length(unlist(param)) == 1) {
         parametre_encode <- toJSON(param, auto_unbox = FALSE) %>% URLencode()
-
       } else {
-
         parametre_encode <- toJSON(param, auto_unbox = TRUE) %>% URLencode()
-
       }
-
     }
 
-    glue('&{param_name}={parametre_encode}')
-
+    glue("&{param_name}={parametre_encode}")
   })
 
   params_encodes_pour_url <- glue_collapse(params_encodes_pour_url, sep = "", width = Inf, last = "")
@@ -307,13 +325,9 @@ xtradata_requete_aggregate <- function(key = NULL,
 
   df <- fromJSON(response, flatten = TRUE)$features
 
-  if(length(df) > 0) {
-    colnames(df) <-  map_chr(colnames(df), ~gsub(x=  ., pattern = "properties.", replacement = ""))
+  if (length(df) > 0) {
+    colnames(df) <- map_chr(colnames(df), ~ gsub(x = ., pattern = "properties.", replacement = ""))
   }
 
   return(as.data.frame(df))
-
 }
-
-
-
