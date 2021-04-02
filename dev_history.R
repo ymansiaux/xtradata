@@ -20,7 +20,7 @@ usethis::use_test(name = "check_internet")
 usethis::use_test(name = "check_API_results")
 usethis::use_test(name = "xtradata_requete_features")
 usethis::use_test(name = "xtradata_requete_aggregate")
-
+usethis::use_test(name = "get_latitude_longitude")
 
 #
 devtools::check()
