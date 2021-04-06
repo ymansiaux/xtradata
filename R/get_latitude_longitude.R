@@ -17,7 +17,7 @@
 # localisation_velos <- get_latitude_longitude(velos)
 get_latitude_longitude <- function(resultat_requete) {
 
-  assert_that(class(resultat_requete) %in% c("data.table", "data.frame"))
+  assert_that(any(class(resultat_requete) %in% c("data.table", "data.frame")))
 
   assert_that("geometry.coordinates" %in% colnames(resultat_requete))
 
