@@ -12,6 +12,33 @@ test_that("recuperation de la couche des parkings hors voirie", {
 })
 
 
+test_that("Features : passage d'un seul paramètre en filter", {
+  skip_if_not(curl::has_internet(), "Pas de connexion internet")
+
+  MaCle <- "DATAZBOUBB"
+
+  filter <- '{"ident": "Z203CT7"}'
+  filterJSON <- '{
+"ident": "Z203CT7\"
+}'
+
+
+  res1 <- xtradata_requete_features(
+    typename = "PC_CAPTV_P", key = MaCle,
+    filter = filter
+  )
+
+  res2 <- xtradata_requete_features(
+    typename = "PC_CAPTV_P", key = MaCle,
+     filter = filterJSON
+  )
+
+  expect_gt(nrow(res1), 0)
+  expect_gt(nrow(res2), 0)
+  expect_equal(dim(res1), dim(res2))
+  expect_true(all.equal(res1, res2))
+})
+
 test_that("Features : passage de attributes en vecteur R et en array resultats identiques", {
 
   skip_if_not(curl::has_internet(), "Pas de connexion internet")

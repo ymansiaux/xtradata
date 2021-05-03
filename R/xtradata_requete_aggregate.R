@@ -292,28 +292,27 @@ xtradata_requete_aggregate <- function(key = NULL,
 
 
   parametres_requete <- list(
+    "filter" = filter,
     "key" = key, "rangeStart" = rangeStart, "rangeEnd" = rangeEnd,
     "rangeStep" = rangeStep, "rangeFilter" = rangeFilter,
-    "filter" = filter, "attributes" = attributes
+   "attributes" = attributes
   ) %>% compact()
+  # browser()
 
   params_encodes_pour_url <- map2(parametres_requete, names(parametres_requete), function(param, param_name) {
     if (vec_depth(param) == 1 & length(param) == 1) {
-      # on doit transformer les listes et les vecteurs, si ce n'est pas le cas pas besoin de passer en JSON
+      # on gere ici les elements à un niveau clé <-> valeur : ex key = MaCle ou rangeStart = une date quelconque
       parametre_encode <- param
     } else {
-      # cette partie va gérer les tableaux. 1er if : tableau de lg 1, 2eme if : tableau de lg >1
-      if (length(unlist(param)) == 1) {
-        parametre_encode <- toJSON(param, auto_unbox = FALSE) %>% URLencode()
-      } else {
+      # ici element plus complexes, ex les listes avec des sous niveau : les filters ou les rangeStep
         parametre_encode <- toJSON(param, auto_unbox = TRUE) %>% URLencode()
-      }
     }
 
     glue("&{param_name}={parametre_encode}")
   })
 
   params_encodes_pour_url <- glue_collapse(params_encodes_pour_url, sep = "", width = Inf, last = "")
+  # browser()
 
   url <- glue("{base_url_xtradata_aggregate}{params_encodes_pour_url}")
   if (showURL) print(url)

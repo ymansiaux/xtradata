@@ -25,6 +25,6 @@ usethis::use_test(name = "get_latitude_longitude")
 #
 devtools::check()
 devtools::build(vignettes = TRUE)
-devtools::install()
+devtools::install(build_vignettes = TRUE)
 
 pkgload::load_all()
