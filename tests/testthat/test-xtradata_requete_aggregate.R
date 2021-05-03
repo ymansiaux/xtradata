@@ -45,6 +45,42 @@ test_that("Aggregate : passage de filter en liste R et en json resultats identiq
 })
 
 
+test_that("Aggregate : passage d'un seul paramètre en filter", {
+  skip_if_not(curl::has_internet(), "Pas de connexion internet")
+
+  MaCle <- "DATAZBOUBB"
+
+  attributes_key_value_JSON <- '{"comptage_5m" : "sum"}'
+  filter <- '{"ident": "Z203CT7"}'
+  filterJSON <- '{
+"ident": "Z203CT7\"
+}'
+
+
+  res1 <- xtradata_requete_aggregate(
+    typename = "PC_CAPTV_P", key = MaCle,
+    rangeStart = "2021-03-05",
+    rangeEnd = "2021-03-06",
+    rangeStep = "hour",
+    filter = filter,
+    attributes = attributes_key_value_JSON
+
+  )
+
+  res2 <- xtradata_requete_aggregate(
+    typename = "PC_CAPTV_P", key = MaCle,
+    rangeStart = "2021-03-05",
+    rangeEnd = "2021-03-06",
+    rangeStep = "hour",
+    filter = filterJSON,
+    attributes = attributes_key_value_JSON
+  )
+
+  expect_gt(nrow(res1), 0)
+  expect_gt(nrow(res2), 0)
+  expect_equal(dim(res1), dim(res2))
+  expect_true(all.equal(res1, res2))
+})
 
 test_that("Aggregate : passage de rangeFilter en liste R et en json resultats identiques", {
   skip_if_not(curl::has_internet(), "Pas de connexion internet")
