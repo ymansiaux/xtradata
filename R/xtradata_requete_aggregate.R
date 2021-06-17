@@ -281,8 +281,10 @@ xtradata_requete_aggregate <- function(key = NULL,
   assert_that(!is.null(key))
   assert_that(!is.null(rangeStart))
 
-
   check_internet()
+
+  rangeStart <- paste0(rangeStart, "T00:00:00")
+  if(!is.null(rangeEnd)) rangeEnd <- paste0(rangeEnd, "T00:00:00")
 
   base_url_xtradata_aggregate <- glue("http://data.bordeaux-metropole.fr/geojson/aggregate/{typename}?")
 
@@ -309,6 +311,7 @@ xtradata_requete_aggregate <- function(key = NULL,
     }
 
     glue("&{param_name}={parametre_encode}")
+
   })
 
   params_encodes_pour_url <- glue_collapse(params_encodes_pour_url, sep = "", width = Inf, last = "")
