@@ -8,9 +8,10 @@ test_that("test fonction get_latitude_longitude", {
 
   req <- xtradata_requete_aggregate(key = MaCle,
                                     typename = "PC_CAPTV_P",
-                                    rangeStart = "2021-01-01",
-                                    rangeEnd = "2021-01-05",
-                                    rangeStep = "hour")
+                                    rangeStart = "2021-02-01",
+                                    rangeEnd = "2021-02-05",
+                                    rangeStep = "hour",
+                                    showURL = TRUE)
 
   res <- get_latitude_longitude(req)
 
