@@ -287,8 +287,13 @@ xtradata_requete_aggregate <- function(key = NULL,
 
   check_internet()
 
+  rangeStart <- paste0(rangeStart, "T00:00:00")
+  if(!is.null(rangeEnd)) rangeEnd <- paste0(rangeEnd, "T00:00:00")
+
+
   base_url_xtradata_aggregate <- ifelse(useHTTPS, glue("https://data.bordeaux-metropole.fr/geojson/aggregate/{typename}?"),
                                         glue("http://data.bordeaux-metropole.fr/geojson/aggregate/{typename}?"))
+
   if (is.string(filter)) filter <- fromJSON(filter)
   if (is.string(rangeFilter)) rangeFilter <- fromJSON(rangeFilter)
   if (is.string(attributes)) attributes <- fromJSON(attributes)
