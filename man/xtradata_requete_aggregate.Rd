@@ -14,7 +14,8 @@ xtradata_requete_aggregate(
   rangeFilter = list(hours = 0:23, days = 1:7, publicHolidays = FALSE),
   attributes = NULL,
   filter = NULL,
-  showURL = FALSE
+  showURL = FALSE,
+  useHTTPS = TRUE
 )
 }
 \arguments{
@@ -54,6 +55,8 @@ Voir exemples et réferences}
 \item{filter}{Filtres à appliquer sur les données. Format liste R ou format JSON (string). Voir exemples}
 
 \item{showURL}{afficher l'url interrogee (boolean)}
+
+\item{useHTTPS}{url en HTTPS (boolean)}
 }
 \value{
 un data frame issu de la requête

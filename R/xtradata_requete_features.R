@@ -23,6 +23,7 @@
 #'  issu du SQL. (date ou datetime)
 #'
 #' @param showURL afficher l'url interrogee (boolean)
+#' @param useHTTPS url en HTTPS (boolean)
 #'
 #' @return un data frame issu de la requête
 #' @export
@@ -158,16 +159,20 @@ xtradata_requete_features <- function(key = NULL,
                                       attributes = NULL,
                                       maxfeatures = NULL,
                                       backintime = NULL,
-                                      showURL = FALSE) {
+                                      showURL = FALSE,
+                                      useHTTPS = TRUE) {
   assert_that(!is.null(typename))
   assert_that(!is.null(key))
   assert_that(crs %in% c("epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"),
-    msg = 'Les valeurs de crs autorisees sont "epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"'
+              msg = 'Les valeurs de crs autorisees sont "epsg:4326", "epsg:3945", "epsg:2154", "epsg:3857"'
   )
 
   check_internet()
 
-  base_url_xtradata_features <- glue("http://data.bordeaux-metropole.fr/geojson/features/{typename}?")
+  base_url_xtradata_features <- ifelse(useHTTPS, glue("https://data.bordeaux-metropole.fr/geojson/features/{typename}?"),
+                                       glue("http://data.bordeaux-metropole.fr/geojson/features/{typename}?"))
+
+
 
   if (is.string(filter)) filter <- fromJSON(filter)
   if (is.string(attributes)) attributes <- fromJSON(attributes)

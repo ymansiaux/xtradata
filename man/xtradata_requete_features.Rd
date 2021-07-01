@@ -12,7 +12,8 @@ xtradata_requete_features(
   attributes = NULL,
   maxfeatures = NULL,
   backintime = NULL,
-  showURL = FALSE
+  showURL = FALSE,
+  useHTTPS = TRUE
 )
 }
 \arguments{
@@ -39,6 +40,8 @@ certains attributs / valeurs peuvent différer du mode classique sans le paramè
 issu du SQL. (date ou datetime)}
 
 \item{showURL}{afficher l'url interrogee (boolean)}
+
+\item{useHTTPS}{url en HTTPS (boolean)}
 }
 \value{
 un data frame issu de la requête

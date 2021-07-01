@@ -37,7 +37,9 @@
 #' @param filter Filtres à appliquer sur les données. Format liste R ou format JSON (string). Voir exemples
 #'
 #' @param showURL afficher l'url interrogee (boolean)
-
+#'
+#' @param useHTTPS url en HTTPS (boolean)
+#'
 #' @return un data frame issu de la requête
 #' @export
 #'
@@ -276,7 +278,8 @@ xtradata_requete_aggregate <- function(key = NULL,
                                        ),
                                        attributes = NULL,
                                        filter = NULL,
-                                       showURL = FALSE) {
+                                       showURL = FALSE,
+                                       useHTTPS = TRUE) {
   assert_that(!is.null(typename))
   assert_that(!is.null(key))
   assert_that(!is.null(rangeStart))
@@ -284,7 +287,9 @@ xtradata_requete_aggregate <- function(key = NULL,
 
   check_internet()
 
-  base_url_xtradata_aggregate <- glue("http://data.bordeaux-metropole.fr/geojson/aggregate/{typename}?")
+  base_url_xtradata_aggregate <- ifelse(useHTTPS, glue("https://data.bordeaux-metropole.fr/geojson/aggregate/{typename}?"),
+                                        glue("http://data.bordeaux-metropole.fr/geojson/aggregate/{typename}?"))
+
 
   if (is.string(filter)) filter <- fromJSON(filter)
   if (is.string(rangeFilter)) rangeFilter <- fromJSON(rangeFilter)
@@ -295,7 +300,7 @@ xtradata_requete_aggregate <- function(key = NULL,
     "filter" = filter,
     "key" = key, "rangeStart" = rangeStart, "rangeEnd" = rangeEnd,
     "rangeStep" = rangeStep, "rangeFilter" = rangeFilter,
-   "attributes" = attributes
+    "attributes" = attributes
   ) %>% compact()
   # browser()
 
@@ -305,7 +310,7 @@ xtradata_requete_aggregate <- function(key = NULL,
       parametre_encode <- param
     } else {
       # ici element plus complexes, ex les listes avec des sous niveau : les filters ou les rangeStep
-        parametre_encode <- toJSON(param, auto_unbox = TRUE) %>% URLencode()
+      parametre_encode <- toJSON(param, auto_unbox = TRUE) %>% URLencode()
     }
 
     glue("&{param_name}={parametre_encode}")
