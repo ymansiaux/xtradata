@@ -1,9 +1,11 @@
-Sys.setlocale('LC_ALL','C')
+library(lubridate)
+
+
 test_that("recuperation de la couche des parkings hors voirie", {
 
   skip_if_not(curl::has_internet(), "Pas de connexion internet")
 
-  MaCle <- "DATAZBOUBB"
+  MaCle <- Sys.getenv("XTRADATA_KEY")
 
   req <- xtradata_requete_features(typename  = "ST_PARK_P", key = MaCle)
 
@@ -15,7 +17,7 @@ test_that("recuperation de la couche des parkings hors voirie", {
 test_that("Features : passage d'un seul paramètre en filter", {
   skip_if_not(curl::has_internet(), "Pas de connexion internet")
 
-  MaCle <- "DATAZBOUBB"
+  MaCle <- Sys.getenv("XTRADATA_KEY")
 
   filter <- '{"ident": "Z203CT7"}'
   filterJSON <- '{
@@ -35,6 +37,8 @@ test_that("Features : passage d'un seul paramètre en filter", {
 
   expect_gt(nrow(res1), 0)
   expect_gt(nrow(res2), 0)
+  expect_equal(unique(res1$gid), 2451)
+  expect_equal(unique(res2$gid), 2451)
   expect_equal(dim(res1), dim(res2))
   expect_true(all.equal(res1, res2))
 })
@@ -43,7 +47,7 @@ test_that("Features : passage de attributes en vecteur R et en array resultats i
 
   skip_if_not(curl::has_internet(), "Pas de connexion internet")
 
-  MaCle <- "DATAZBOUBB"
+  MaCle <- Sys.getenv("XTRADATA_KEY")
 
   attributes <- list("cdate", "mdate")
   attributesArray <- '["cdate", "mdate"]'
@@ -56,6 +60,8 @@ test_that("Features : passage de attributes en vecteur R et en array resultats i
 
   expect_gt(nrow(res1), 0)
   expect_gt(nrow(res2), 0)
+  expect_equal(colnames(res1), c("type", "cdate", "mdate"))
+  expect_equal(colnames(res2), c("type", "cdate", "mdate"))
   expect_equal(dim(res1), dim(res2))
   expect_true(all.equal(res1, res2))
 
@@ -67,11 +73,11 @@ test_that("Features : passage de filter en liste R et en json resultats identiqu
 
   skip_if_not(curl::has_internet(), "Pas de connexion internet")
 
-  MaCle <- "DATAZBOUBB"
+  MaCle <- Sys.getenv("XTRADATA_KEY")
 
   filter <- list("type" = "BOUCLE",
                  "mdate" = list(
-                   '$gt' = "2020-01-01T08:00:00")
+                   '$gt' = "2021-09-01T08:00:00")
   )
 
 
@@ -79,7 +85,7 @@ test_that("Features : passage de filter en liste R et en json resultats identiqu
 
    "type": "BOUCLE",
  "mdate": {
-     "$gt": "2020-01-01T08:00:00"
+     "$gt": "2021-09-01T08:00:00"
     }
   }'
 
@@ -91,6 +97,8 @@ test_that("Features : passage de filter en liste R et en json resultats identiqu
 
   expect_gt(nrow(res1), 0)
   expect_gt(nrow(res2), 0)
+  expect_true(all(as_date(res1$mdate) >= as_date("2021-09-01")))
+  expect_true(all(as_date(res2$mdate) >= as_date("2021-09-01")))
   expect_equal(dim(res1), dim(res2))
   expect_true(all.equal(res1, res2))
 
@@ -101,7 +109,7 @@ test_that("Features : tests filtres combines dans filter", {
 
   skip_if_not(curl::has_internet(), "Pas de connexion internet")
 
-  MaCle <- "DATAZBOUBB"
+  MaCle <- Sys.getenv("XTRADATA_KEY")
 
   filterJSON_combined <- '{
   "$and": [
@@ -129,6 +137,10 @@ test_that("Features : tests filtres combines dans filter", {
 
   expect_gt(nrow(res1), 0)
   expect_gt(nrow(res2), 0)
+  expect_gte(min(res1$gid, na.rm = TRUE), 1)
+  expect_gte(min(res2$gid, na.rm = TRUE), 1)
+  expect_lte(min(res1$gid, na.rm = TRUE), 5)
+  expect_lte(min(res2$gid, na.rm = TRUE), 5)
   expect_equal(dim(res1), dim(res2))
   expect_true(all.equal(res1, res2))
 
