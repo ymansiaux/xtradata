@@ -14,6 +14,7 @@ xtradata_requete_aggregate(
   rangeFilter = list(hours = 0:23, days = 1:7, publicHolidays = FALSE),
   attributes = NULL,
   filter = NULL,
+  group = "time+gid",
   showURL = FALSE,
   useHTTPS = TRUE
 )
@@ -53,6 +54,12 @@ Des paramètres additionnels peuvent également être utilisés. Dans ce cas for
 Voir exemples et réferences}
 
 \item{filter}{Filtres à appliquer sur les données. Format liste R ou format JSON (string). Voir exemples}
+
+\item{group}{Sélectionne le mode de regroupement des objets :
+time+gid - regroupement par valeur rangeStep + valeur du gid, soit autant d'objets unique par plage que d'id différents
+time - soit 1 objet par plage rangeStep regroupant tous les enregistrements
+Les fonctions d'agrégation définies dans attributes s'appliquent
+(default : time + gid)}
 
 \item{showURL}{afficher l'url interrogee (boolean)}
 
@@ -276,6 +283,44 @@ res12 <- xtradata_requete_aggregate(
 )
 
 all.equal(res11, res12)
+
+# Comparaison des 2 valeurs du parametre group
+
+  filter <- list(
+"etat" = "LIBRE",
+"libres" = list(
+  "$gt" = 100
+)
+)
+
+attributes <- list("libres" = "sum")
+
+res13 <- xtradata_requete_aggregate(
+  typename = "ST_PARK_P", key = MaCle,
+  rangeStart = date_deb,
+  rangeEnd = date_fin,
+  rangeStep = "hour",
+  filter = filter,
+  group= "time+gid",
+  attributes = attributes
+)
+
+res13 <- res13 \%>\%
+  dplyr::group_by(time) \%>\%
+  dplyr::summarise(libres = sum(libres))
+
+res14 <- xtradata_requete_aggregate(
+  typename = "ST_PARK_P", key = MaCle,
+  rangeStart = date_deb,
+  rangeEnd = date_fin,
+  rangeStep = "hour",
+  filter = filter,
+  group= "time",
+  attributes = attributes
+)
+
+all.equal(res13$libres, res14$libres)
+
 }
 
 }
