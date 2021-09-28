@@ -11,6 +11,7 @@ xtradata_requete_features(
   filter = NULL,
   attributes = NULL,
   maxfeatures = NULL,
+  orderby = NULL,
   backintime = NULL,
   showURL = FALSE,
   useHTTPS = TRUE
@@ -34,10 +35,17 @@ Format vecteur R ou format array (string). Voir exemples}
 \item{maxfeatures}{Nombre maximum d'enregistrement à retourner.
 Si 0 ou non precise, tous les enregistrements de la couche seront retournes}
 
+\item{orderby}{Tableau ordonné des attributs de tri.
+Par défaut, aucun tri n'est effectué et l'ordre des résultats est imprévisible
+Format vecteur R ou format array (string). Voir exemples}
+
 \item{backintime}{Donne accès aux données de la couche sélectionnée à une date donnée.
 Ces données étant issues de l'historique stocké sur des bases NoSQL,
 certains attributs / valeurs peuvent différer du mode classique sans le paramètre backintime,
-issu du SQL. (date ou datetime)}
+issu du SQL. (date ou datetime)
+Le paramètre accepte une date ou une datetime telle que définie dans la RFC 3339,
+section 5.6 ou tout format accepté par l'objet JavaScript Date.
+une macro relative à la date / heure actuelle, composée d'un nombre et d'une unité parmi min, hour, day ou month. Exemple "-15min" ou "-1 month"}
 
 \item{showURL}{afficher l'url interrogee (boolean)}
 
@@ -161,6 +169,91 @@ res9 <- xtradata_requete_features(
 )
 
 all.equal(res8, res9)
+
+# Utilisation de l'argument backintime avec une date ou un datetime
+
+filter <- list(
+"type" = "BOUCLE",
+"mdate" = list(
+  "$gt" = "2020-01-01T08:00:00"
+)
+)
+
+
+# 2 façons d'utiliser le paramètre filter
+res10 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filter,
+  backintime = "2021-06-01T10:00:00"
+)
+
+tail(res10$mdate)
+
+res11 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filter,
+  backintime = "2021-06-01"
+)
+
+tail(res11$mdate)
+
+#' # Utilisation de l'argument backintime avec ne macro relative à la date / heure actuelle
+#' #  composée d'un nombre et d'une unité parmi min, hour, day ou month
+
+res12 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filter,
+  backintime = "-30min"
+)
+
+tail(res12$mdate)
+
+
+res13 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filter,
+  backintime = "-5hour"
+)
+
+tail(res13$mdate)
+
+res14 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filter,
+  backintime = "-7day"
+)
+
+tail(res14$mdate)
+
+
+res15 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filter,
+  backintime = "-1month"
+)
+
+tail(res15$mdate)
+
+# 2 façons d'utiliser le paramètre orderby
+orderby <- list("mdate", "gid")
+orderbyArray <- '["mdate", "gid"]'
+
+res16 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filter,
+  orderby = orderby,
+  showURL = TRUE
+)
+
+res17 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = MaCle,
+  filter = filter,
+  orderby = orderbyArray,
+  showURL = TRUE
+)
+res17
+
+all.equal(res16, res17)
 }
 
 }
