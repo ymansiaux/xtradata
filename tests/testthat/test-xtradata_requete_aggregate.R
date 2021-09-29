@@ -2,6 +2,7 @@ date_deb <- "2021-06-01"
 date_fin <- "2021-06-05"
 
 library(lubridate)
+library(dplyr)
 
 test_that("Aggregate : passage de filter en liste R et en json resultats identiques", {
   skip_if_not(curl::has_internet(), "Pas de connexion internet")
@@ -305,4 +306,47 @@ test_that("Aggregate : tests filtres combines dans filter", {
   expect_lte(min(res2$total, na.rm = TRUE), 1000)
   expect_equal(dim(res1), dim(res2))
   expect_true(all.equal(res1, res2))
+})
+
+
+test_that("Aggregate : tests group renvoie la meme chose", {
+  skip_if_not(curl::has_internet(), "Pas de connexion internet")
+
+  MaCle <- Sys.getenv("XTRADATA_KEY")
+
+  filter <- list(
+    "etat" = "LIBRE",
+    "libres" = list(
+      "$gt" = 100
+    )
+  )
+
+  attributes <- list("libres" = "sum")
+
+  res1 <- xtradata_requete_aggregate(
+    typename = "ST_PARK_P", key = MaCle,
+    rangeStart = date_deb,
+    rangeEnd = date_fin,
+    rangeStep = "hour",
+    filter = filter,
+    group= "time+gid",
+    attributes = attributes
+  )
+
+  res1 <- res1 %>%
+    group_by(time) %>%
+    summarise(libres = sum(libres))
+
+  res2 <- xtradata_requete_aggregate(
+    typename = "ST_PARK_P", key = MaCle,
+    rangeStart = date_deb,
+    rangeEnd = date_fin,
+    rangeStep = "hour",
+    filter = filter,
+    group= "time",
+    attributes = attributes
+  )
+
+  all.equal(res1$libres, res2$libres)
+
 })

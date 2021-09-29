@@ -34,7 +34,11 @@
 #'  Des paramètres additionnels peuvent également être utilisés. Dans ce cas format liste R ou format objet JSON
 #'  Voir exemples et réferences
 #'
-#' @param filter Filtres à appliquer sur les données. Format liste R ou format JSON (string). Voir exemples
+#' @param group Sélectionne le mode de regroupement des objets :
+#' time+gid - regroupement par valeur rangeStep + valeur du gid, soit autant d'objets unique par plage que d'id différents
+#' time - soit 1 objet par plage rangeStep regroupant tous les enregistrements
+#' Les fonctions d'agrégation définies dans attributes s'appliquent
+#' (default : time + gid)
 #'
 #' @param showURL afficher l'url interrogee (boolean)
 #'
@@ -264,6 +268,44 @@
 #' )
 #'
 #' all.equal(res11, res12)
+#'
+#' # Comparaison des 2 valeurs du parametre group
+#'
+#'   filter <- list(
+#' "etat" = "LIBRE",
+#' "libres" = list(
+#'   "$gt" = 100
+#' )
+#' )
+#'
+#' attributes <- list("libres" = "sum")
+#'
+#' res13 <- xtradata_requete_aggregate(
+#'   typename = "ST_PARK_P", key = MaCle,
+#'   rangeStart = date_deb,
+#'   rangeEnd = date_fin,
+#'   rangeStep = "hour",
+#'   filter = filter,
+#'   group= "time+gid",
+#'   attributes = attributes
+#' )
+#'
+#' res13 <- res13 %>%
+#'   dplyr::group_by(time) %>%
+#'   dplyr::summarise(libres = sum(libres))
+#'
+#' res14 <- xtradata_requete_aggregate(
+#'   typename = "ST_PARK_P", key = MaCle,
+#'   rangeStart = date_deb,
+#'   rangeEnd = date_fin,
+#'   rangeStep = "hour",
+#'   filter = filter,
+#'   group= "time",
+#'   attributes = attributes
+#' )
+#'
+#' all.equal(res13$libres, res14$libres)
+#'
 #' }
 #'
 xtradata_requete_aggregate <- function(key = NULL,
@@ -278,6 +320,7 @@ xtradata_requete_aggregate <- function(key = NULL,
                                        ),
                                        attributes = NULL,
                                        filter = NULL,
+                                       group = "time+gid",
                                        showURL = FALSE,
                                        useHTTPS = TRUE) {
   assert_that(!is.null(typename))
@@ -298,14 +341,18 @@ xtradata_requete_aggregate <- function(key = NULL,
   if (is.string(rangeFilter)) rangeFilter <- fromJSON(rangeFilter)
   if (is.string(attributes)) attributes <- fromJSON(attributes)
 
+  group <- URLencode(group, reserved = TRUE)
 
   parametres_requete <- list(
     "filter" = filter,
-    "key" = key, "rangeStart" = rangeStart, "rangeEnd" = rangeEnd,
-    "rangeStep" = rangeStep, "rangeFilter" = rangeFilter,
-    "attributes" = attributes
+    "key" = key,
+    "rangeStart" = rangeStart,
+    "rangeEnd" = rangeEnd,
+    "rangeStep" = rangeStep,
+    "rangeFilter" = rangeFilter,
+    "attributes" = attributes,
+    "group" = group
   ) %>% compact()
-  # browser()
 
   params_encodes_pour_url <- map2(parametres_requete, names(parametres_requete), function(param, param_name) {
     if (vec_depth(param) == 1 & length(param) == 1) {
@@ -320,7 +367,6 @@ xtradata_requete_aggregate <- function(key = NULL,
   })
 
   params_encodes_pour_url <- glue_collapse(params_encodes_pour_url, sep = "", width = Inf, last = "")
-  # browser()
 
   url <- glue("{base_url_xtradata_aggregate}{params_encodes_pour_url}")
   if (showURL) print(url)
