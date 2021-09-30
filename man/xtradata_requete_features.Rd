@@ -179,8 +179,6 @@ filter <- list(
 )
 )
 
-
-# 2 façons d'utiliser le paramètre filter
 res10 <- xtradata_requete_features(
   typename = "PC_CAPTE_P", key = MaCle,
   filter = filter,
