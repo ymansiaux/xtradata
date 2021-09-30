@@ -9,12 +9,13 @@
 #'
 #' @examples \dontrun{
 #' velos <- xtradata_requete_aggregate(key = "Macle",
-#                                         typename = "PC_CAPTV_P",
-#                                         rangeStart = "2021-01-01",
-#                                         rangeEnd = "2021-02-01",
-#                                         rangeStep = "hour"
-#                                         )
-# localisation_velos <- get_latitude_longitude(velos)
+#'                                         typename = "PC_CAPTV_P",
+#'                                         rangeStart = "2021-01-01",
+#'                                         rangeEnd = "2021-02-01",
+#'                                         rangeStep = "hour"
+#'                                         )
+#' localisation_velos <- get_latitude_longitude(velos)
+#'}
 get_latitude_longitude <- function(resultat_requete) {
 
   assert_that(any(class(resultat_requete) %in% c("data.table", "data.frame")))

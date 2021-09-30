@@ -17,3 +17,14 @@ un data frame à 2 colonnes (latitude et longitude)
 Recupere les données de latitude et longitude à partir d'une requete issue
 d'un webservice xtradata
 }
+\examples{
+\dontrun{
+velos <- xtradata_requete_aggregate(key = "Macle",
+                                        typename = "PC_CAPTV_P",
+                                        rangeStart = "2021-01-01",
+                                        rangeEnd = "2021-02-01",
+                                        rangeStep = "hour"
+                                        )
+localisation_velos <- get_latitude_longitude(velos)
+}
+}

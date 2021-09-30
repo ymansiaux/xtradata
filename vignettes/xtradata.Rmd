@@ -1,21 +1,315 @@
 ---
-title: "xtradata"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{xtradata}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+title: |
+  ![](`r system.file("logo", "datalab-logo-lightmode.png", package = "bdxmetroidentity")`){width=250px style="display: block; margin-bottom: 50px"}
+  Package xtradata
+author: "`r emo::ji('coder')` Yohann Mansiaux"
+date: "`r emo::ji('calendar')` `r Sys.Date()`"
+output:
+  bdxmetroidentity::html_vignette_bdxmetro:
+    toc: true
+    toc_depth: 3
+    theme: "light"
+    code_folding: "show"
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r setup}
+
+# Xtradata Bordeaux Métropole
+
+Ce package propose d'interroger les webservices xtradata de Bordeaux Métropole.
+
+En l'état seuls les services *features* et *aggregate* peuvent être interrogés via ce package.
+
+Davantage d'informations sur ces webservices sont disponibles ici : [webservices xtradata BM](http://data.bordeaux-metropole.fr/geojson/help/)
+
+L'utilisation des services (et par conséquent du package) nécessite de posséder une clé d'accès.
+[Demande de clé](https://data.bordeaux-metropole.fr/opendata/key)
+
+# Installation du package
+
+Ce package s'installe à partir des sources du format .tar.gz.
+Veuillez noter que les dépendances suivantes devront également être installées : assertthat, curl, glue, httr, jsonlite, magrittr, purrr.
+
+```{r, eval = FALSE}
+install.packages("xtradata_xxxx.tar.gz", repos = NULL, type = "source")
+```
+
+```{r}
 library(xtradata)
 ```
+
+
+# Utilisation du package
+
+## Webservice features
+
+Ce webservice renvoie les données d'une couche. 
+Pour obtenir davantage d'infos, consulter la documentation de la fonction xtradata_requete_features ou la page dédiée de ce webservice [infos features](http://data.bordeaux-metropole.fr/geojson/help/#/default/get_features__typename_).
+
+
+### Appel minimal
+
+Les 2 paramètres requis sont le paramètre key (la clé d'accès) et le paramètre typename (la couche de données à récupérer).
+Les exemples fournis ensuite concernent la couche PC_CAPTE_P, qui décrit les [données temps réél des capteurs auto](https://opendata.bordeaux-metropole.fr/explore/dataset/pc_capte_p/information/).
+
+Pour davantage d'informations sur les attributs présents dans une couche donnée, le dictionnaire [dicopub](https://data.bordeaux-metropole.fr/dicopub/#/dico) est une ressource indispensable.
+
+
+```{r setAPIKEY, echo=FALSE}
+key <- Sys.getenv("XTRADATA_KEY")
+```
+
+
+```{r minimalAppel}
+# Couche des capteurs de trafic auto
+typename <- "PC_CAPTE_P"
+# key <- "VOTRE_CLE_OPEN_DATA"
+
+requete <- xtradata_requete_features(key = key, typename = typename)
+
+head(requete)
+```
+
+
+Une fonction permet de récupérer les coordonnées x,y présents dans la colonne geometry.coordinates pour obtenir un data.frame avec 2 colonnes : latitude et longitude
+
+```{r}
+lat_long <- get_latitude_longitude(requete)
+
+head(lat_long)
+```
+
+
+### Parametre filter
+
+Le paramètre filter peut être fourni de 2 façons, soit sous forme d'une liste R, soit sous format d'une chaine de caractères avec un filtre écrit au format JSON (pratique pour faire des copier-coller depuis le service [swagger](http://data.bordeaux-metropole.fr/geojson/help/#/default/get_features__typename_))
+
+```{r filter}
+filter_list <- list(
+  "type" = "BOUCLE",
+  "mdate" = list(
+    "$gt" = "2020-01-01T08:00:00"
+  )
+)
+
+
+filterJSON <- '{
+"type": "BOUCLE",
+"mdate": {
+  "$gt": "2020-01-01T08:00:00"
+ }
+}'
+
+# 2 façons d'utiliser le paramètre filter
+res1 <- xtradata_requete_features(
+  typename = typename, key = key,
+  filter = filter_list
+)
+
+res2 <- xtradata_requete_features(
+  typename = typename, key = key,
+  filter = filterJSON
+)
+
+# on vérifie que les résultats sont identiques
+all.equal(res1, res2)
+
+```
+
+
+Les filtres sur un même champ doivent être combinés avec les opérateurs "$and", "$or", "$not"
+
+```{r filtercombined}
+
+filterJSON_combined <- '{
+ "$and": [
+  { "gid": {"$gte": "1"} },
+  { "gid": {"$lte": "5"} }
+ ]
+ }'
+
+filter_list_combined <- list(
+  "$and" = list(
+    list("gid" = list(
+      "$gte" = "1"
+    )),
+    
+    list("gid" = list(
+      "$lte" = "5"
+    ))
+  ))
+
+res1 <- xtradata_requete_features(
+  typename = typename, key = key,
+  filter = filterJSON_combined
+)
+
+res2 <- xtradata_requete_features(
+  typename = typename, key = key,
+  filter = filter_list_combined
+)
+
+# on vérifie que les résultats sont identiques
+all.equal(res1, res2)
+
+```
+
+Il est possible de fournir un tableau de données dans l'argument filter
+
+```{r}
+filter_and_list <- list(
+  "gid" = list("$in" = c(50:55))
+)
+
+filter_and_JSON <- '{
+ "gid": {
+  "$in": [
+    50,51,52,53,54,55
+  ]
+ }}'
+
+res1 <- xtradata_requete_features(
+  typename = typename, key = key,
+  filter = filter_and_list
+)
+
+res2 <- xtradata_requete_features(
+  typename = typename, key = key,
+  filter = filter_and_JSON
+)
+
+# on vérifie que les résultats sont identiques
+all.equal(res1, res2)
+```
+
+### Paramètre attributes
+
+```{r attributes}
+
+# 2 façons d'utiliser le paramètre attributes
+attributes <- list("cdate", "mdate")
+attributesArray <- '["cdate", "mdate"]'
+
+filter_list <- list(
+  "type" = "BOUCLE",
+  "mdate" = list(
+    "$gt" = "2020-01-01T08:00:00"
+  )
+)
+
+res1 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = key,
+  filter = filter_list, attributes = attributes
+)
+
+res2 <- xtradata_requete_features(
+  typename = "PC_CAPTE_P", key = key,
+  filter = filter_list, attributes = attributesArray
+)
+
+# on vérifie que les résultats sont identiques
+all.equal(res1, res2)
+
+```
+
+### Paramètre backintime
+
+Ce paramètre permet d'accéder aux données de la couche sélectionnée à une date donnée.
+
+#### Utilisation de l'argument backintime avec une date ou un datetime
+
+```{r backintime}
+
+filter_list <- list(
+  "type" = "BOUCLE",
+  "mdate" = list(
+    "$gt" = "2020-01-01T08:00:00"
+  )
+)
+
+res1 <- xtradata_requete_features(
+  typename = typename, key = key,
+  filter = filter_list,
+  backintime = "2021-06-01T10:00:00"
+)
+
+tail(res1$mdate)
+
+res2 <- xtradata_requete_features(
+  typename = typename, key = key,
+  filter = filter_list,
+  backintime = "2021-06-05"
+)
+
+tail(res2$mdate)
+
+```
+
+#### Utilisation de l'argument backintime avec une macro relative à la date / heure actuelle
+
+```{r backintimemacro}
+
+res1 <- xtradata_requete_features(
+  typename = typename, key = key,
+  filter = filter_list,
+  backintime = "-30min"
+)
+
+tail(res1$mdate)
+
+
+res2 <- xtradata_requete_features(
+  typename = typename, key = key,
+  filter = filter_list,
+  backintime = "-5hour"
+)
+
+tail(res2$mdate)
+
+res3 <- xtradata_requete_features(
+  typename = typename, key = key,
+  filter = filter_list,
+  backintime = "-7day"
+)
+
+tail(res3$mdate)
+
+
+res4 <- xtradata_requete_features(
+  typename = typename, key = key,
+  filter = filter_list,
+  backintime = "-1month"
+)
+
+tail(res4$mdate)
+```
+### Paramètre orderby
+
+```{r orderby}
+
+# 2 façons d'utiliser le paramètre orderby
+orderby <- list("mdate", "gid")
+orderbyArray <- '["mdate", "gid"]'
+
+res1 <- xtradata_requete_features(
+  typename = typename, key = key,
+  filter = filter_list,
+  orderby = orderby
+)
+
+res2 <- xtradata_requete_features(
+    typename = typename, key = key,
+  filter = filter_list,
+  orderby = orderbyArray
+)
+
+all.equal(res1, res2)
+
+```
+
+
 
 

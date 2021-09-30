@@ -1,6 +1,6 @@
 Package: xtradata
 Title: Interrogation des Webservices Xtradata
-Version: 0.2.1
+Version: 0.3
 Authors@R: 
     c(person(given = "Yohann",
            family = "Mansiaux",
@@ -20,6 +20,8 @@ RoxygenNote: 7.1.1
 Suggests: 
     knitr,
     rmarkdown,
+    lubridate,
+    dplyr,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Imports: 
