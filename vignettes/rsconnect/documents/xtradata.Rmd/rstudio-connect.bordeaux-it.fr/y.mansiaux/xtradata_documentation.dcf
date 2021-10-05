@@ -1,0 +1,13 @@
+name: xtradata_documentation
+title: xtradata_documentation
+username: y.mansiaux
+account: y.mansiaux
+server: rstudio-connect.bordeaux-it.fr
+hostUrl: https://rstudio-connect.bordeaux-it.fr/__api__
+appId: 25
+bundleId: 73
+url: https://rstudio-connect.bordeaux-it.fr/xtradata_documentation/
+when: 1633006287.53786
+lastSyncTime: 1633006287.53788
+asMultiple: FALSE
+asStatic: TRUE
