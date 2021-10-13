@@ -36,7 +36,7 @@ Le paramètre accepte une date ou une datetime telle que définie dans la RFC 33
 ou tout format accepté par l'objet JavaScript Date. (date ou datetime)}
 
 \item{rangeStep}{Type de pas à utiliser pour découper les données.
-valeurs autorisées : hour (defaut), day, month (string)}
+valeurs autorisées : hour (defaut), 5min, 15min, 30min, day, week, month (string)}
 
 \item{rangeFilter}{Filtres temporels à appliquer à l'intérieur de la fenêtre de temps
 \itemize{
@@ -187,8 +187,8 @@ res6
 
 all.equal(res5, res6)
 
-attributes_key_value_list <- list("gid" = "first", "libres" = "max")
-attributes_key_value_JSON <- '{"gid" : "first", "libres" : "max"}'
+attributes_key_value_list <- list("etat" = "first", "libres" = "max")
+attributes_key_value_JSON <- '{"etat" : "first", "libres" : "max"}'
 
 res7 <- xtradata_requete_aggregate(
   typename = "ST_PARK_P", key = MaCle,

@@ -8,7 +8,6 @@
 #'
 #' @examples
 #' get_API_error_code(try(xtradata_requete_features(key = "KEY_INCORRECTE", typename = "ST_PARK_P")))
-#' get_API_error_code(try(check_API_results(httr::GET("www.googeul.fr"))))
 get_API_error_code <- function(request) {
   assert_that(class(request) == "try-error", msg = "Cette fonction doit recevoir en entree un appel \u00e0 la fonction try, consulter la documentation")
 

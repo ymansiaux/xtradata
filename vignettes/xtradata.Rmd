@@ -10,6 +10,10 @@ output:
     toc_depth: 3
     theme: "light"
     code_folding: "show"
+vignette: >
+  %\VignetteIndexEntry{xtradata}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}

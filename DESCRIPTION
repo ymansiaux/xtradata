@@ -21,6 +21,8 @@ Suggests:
     knitr,
     rmarkdown,
     lubridate,
+    bdxmetroidentity,
+    emo,
     dplyr,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
