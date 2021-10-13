@@ -1,7 +1,7 @@
 usethis::use_build_ignore(files = "dev_history.R")
 usethis::use_gpl3_license()
 
-usethis::use_vignette("xtradata")
+usethis::use_vignette("xtradataZZZ")
 
 usethis::use_pipe()
 
@@ -23,8 +23,9 @@ usethis::use_test(name = "xtradata_requete_aggregate")
 usethis::use_test(name = "get_latitude_longitude")
 
 #
+vignettes <- TRUE
 devtools::check()
-devtools::build(vignettes = FALSE)
-devtools::install(build_vignettes = FALSE)
+devtools::build(vignettes = vignettes)
+devtools::install(build_vignettes = vignettes)
 
 pkgload::load_all()

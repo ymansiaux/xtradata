@@ -198,8 +198,6 @@ test_that("Aggregate : passage de attributes en vecteur R et en array resultats 
 
   expect_gt(nrow(res1), 0)
   expect_gt(nrow(res2), 0)
-  expect_equal(colnames(res1), c("type", "time", "gid", "libres"))
-  expect_equal(colnames(res2), c("type", "time", "gid", "libres"))
   expect_equal(dim(res1), dim(res2))
   expect_true(all.equal(res1, res2))
 })
@@ -315,13 +313,13 @@ test_that("Aggregate : tests group renvoie la meme chose", {
   MaCle <- Sys.getenv("XTRADATA_KEY")
 
   filter <- list(
-    "etat" = "LIBRE",
     "libres" = list(
       "$gt" = 100
     )
   )
 
-  attributes <- list("libres" = "sum")
+  attributes <- list("libres" = "max")
+
 
   res1 <- xtradata_requete_aggregate(
     typename = "ST_PARK_P", key = MaCle,
@@ -330,12 +328,15 @@ test_that("Aggregate : tests group renvoie la meme chose", {
     rangeStep = "hour",
     filter = filter,
     group= "time+gid",
-    attributes = attributes
+    attributes = attributes,
+    showURL = TRUE
   )
+
+  res1
 
   res1 <- res1 %>%
     group_by(time) %>%
-    summarise(libres = sum(libres))
+    summarise(libres = max(libres))
 
   res2 <- xtradata_requete_aggregate(
     typename = "ST_PARK_P", key = MaCle,

@@ -18,5 +18,4 @@ Permet de retrouver le code erreur d'une requete qui n'a pas fonctionne
 }
 \examples{
 get_API_error_code(try(xtradata_requete_features(key = "KEY_INCORRECTE", typename = "ST_PARK_P")))
-get_API_error_code(try(check_API_results(httr::GET("www.googeul.fr"))))
 }

@@ -17,7 +17,7 @@
 #' ou tout format accepté par l'objet JavaScript Date. (date ou datetime)
 #'
 #' @param rangeStep Type de pas à utiliser pour découper les données.
-#' valeurs autorisées : hour (defaut), day, month (string)
+#' valeurs autorisées : hour (defaut), 5min, 15min, 30min, day, week, month (string)
 #'
 #' @param rangeFilter Filtres temporels à appliquer à l'intérieur de la fenêtre de temps
 #' * hours - Tableau des heure(s) de la journée à retourner, de 0 à 23.
@@ -172,8 +172,8 @@
 #'
 #' all.equal(res5, res6)
 #'
-#' attributes_key_value_list <- list("gid" = "first", "libres" = "max")
-#' attributes_key_value_JSON <- '{"gid" : "first", "libres" : "max"}'
+#' attributes_key_value_list <- list("etat" = "first", "libres" = "max")
+#' attributes_key_value_JSON <- '{"etat" : "first", "libres" : "max"}'
 #'
 #' res7 <- xtradata_requete_aggregate(
 #'   typename = "ST_PARK_P", key = MaCle,

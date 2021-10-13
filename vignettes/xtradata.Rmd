@@ -10,6 +10,10 @@ output:
     toc_depth: 3
     theme: "light"
     code_folding: "show"
+vignette: >
+  %\VignetteIndexEntry{xtradata}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
@@ -19,6 +23,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Xtradata Bordeaux Métropole
 
+Cette documentation concerne la version 3.0 du package.
+
 Ce package propose d'interroger les webservices xtradata de Bordeaux Métropole.
 
 En l'état seuls les services *features* et *aggregate* peuvent être interrogés via ce package.
@@ -27,6 +33,8 @@ Davantage d'informations sur ces webservices sont disponibles ici : [webservices
 
 L'utilisation des services (et par conséquent du package) nécessite de posséder une clé d'accès.
 [Demande de clé](https://data.bordeaux-metropole.fr/opendata/key)
+
+Pour toute question concernant ce package : y.mansiaux@bordeaux-metropole.fr
 
 # Installation du package
 
@@ -63,7 +71,7 @@ key <- Sys.getenv("XTRADATA_KEY")
 ```
 
 
-```{r minimalAppel}
+```{r appelMinimalFeatures}
 # Couche des capteurs de trafic auto
 typename <- "PC_CAPTE_P"
 # key <- "VOTRE_CLE_OPEN_DATA"
@@ -87,7 +95,7 @@ head(lat_long)
 
 Le paramètre filter peut être fourni de 2 façons, soit sous forme d'une liste R, soit sous format d'une chaine de caractères avec un filtre écrit au format JSON (pratique pour faire des copier-coller depuis le service [swagger](http://data.bordeaux-metropole.fr/geojson/help/#/default/get_features__typename_))
 
-```{r filter}
+```{r filterFeatures}
 filter_list <- list(
   "type" = "BOUCLE",
   "mdate" = list(
@@ -122,7 +130,7 @@ all.equal(res1, res2)
 
 Les filtres sur un même champ doivent être combinés avec les opérateurs "$and", "$or", "$not"
 
-```{r filtercombined}
+```{r filterCombinedFeatures}
 
 filterJSON_combined <- '{
  "$and": [
@@ -159,7 +167,7 @@ all.equal(res1, res2)
 
 Il est possible de fournir un tableau de données dans l'argument filter
 
-```{r}
+```{r filterAndFeatures}
 filter_and_list <- list(
   "gid" = list("$in" = c(50:55))
 )
@@ -187,7 +195,7 @@ all.equal(res1, res2)
 
 ### Paramètre attributes
 
-```{r attributes}
+```{r attributesFeatures}
 
 # 2 façons d'utiliser le paramètre attributes
 attributes <- list("cdate", "mdate")
@@ -221,7 +229,7 @@ Ce paramètre permet d'accéder aux données de la couche sélectionnée à une 
 
 #### Utilisation de l'argument backintime avec une date ou un datetime
 
-```{r backintime}
+```{r backintimeFeatures}
 
 filter_list <- list(
   "type" = "BOUCLE",
@@ -250,7 +258,7 @@ tail(res2$mdate)
 
 #### Utilisation de l'argument backintime avec une macro relative à la date / heure actuelle
 
-```{r backintimemacro}
+```{r backintimeMacroFeatures}
 
 res1 <- xtradata_requete_features(
   typename = typename, key = key,
@@ -288,7 +296,7 @@ tail(res4$mdate)
 ```
 ### Paramètre orderby
 
-```{r orderby}
+```{r orderbyFeatures}
 
 # 2 façons d'utiliser le paramètre orderby
 orderby <- list("mdate", "gid")
@@ -301,7 +309,7 @@ res1 <- xtradata_requete_features(
 )
 
 res2 <- xtradata_requete_features(
-    typename = typename, key = key,
+  typename = typename, key = key,
   filter = filter_list,
   orderby = orderbyArray
 )
@@ -311,5 +319,223 @@ all.equal(res1, res2)
 ```
 
 
+## Webservice aggregate
 
+Ce webservice renvoie une aggregation des objets historisés sur une période et un pas de temps donné. 
+Pour obtenir davantage d'infos, consulter la documentation de la fonction xtradata_requete_aggregate ou la page dédiée de ce webservice [infos aggregate](http://http://data.bordeaux-metropole.fr/geojson/help/#/default/get_aggregate__typename_).
+
+
+### Appel minimal
+
+Les 3 paramètres requis sont le paramètre key (la clé d'accès), le paramètre typename (la couche de données à récupérer) et le paramètre rangeStart (le début de la période d'observation).
+Les exemples fournis ensuite concernent la couche ST_PARK_P, qui décrit les [données temps réél des parkings hors voirie](https://opendata.bordeaux-metropole.fr/explore/dataset/st_park_p/information/).
+
+Pour davantage d'informations sur les attributs présents dans une couche donnée, le dictionnaire [dicopub](https://data.bordeaux-metropole.fr/dicopub/#/dico) est une ressource indispensable.
+
+
+```{r appelMinimalAggregate}
+# Couche des capteurs de trafic auto
+typename <- "ST_PARK_P"
+# key <- "VOTRE_CLE_OPEN_DATA"
+
+requete <- xtradata_requete_aggregate(key = key, typename = typename, rangeStart = Sys.Date()-1)
+
+head(requete)
+```
+
+### Parametre filter
+
+Le paramètre filter peut être fourni de 2 façons, soit sous forme d'une liste R, soit sous format d'une chaine de caractères avec un filtre écrit au format JSON (pratique pour faire des copier-coller depuis le service [swagger](http://data.bordeaux-metropole.fr/geojson/help/#/default/get_aggregate__typename_)
+
+```{r filterAggregate}
+filter_list <- list(
+  "ident" = "CUBPK88",
+  "etat" = "LIBRE",
+  "libres" = list(
+    "$gt" = 145
+  )
+)
+
+filterJSON <- '{
+"ident": "CUBPK88",
+"etat" : "LIBRE",
+"libres": {
+ "$gt": 145
+}
+}'
+
+date_deb <- "2021-06-01"
+date_fin <- "2021-06-05"
+
+
+# 2 façons d'utiliser le paramètre filter
+res1 <- xtradata_requete_aggregate(
+  typename = typename, key = key,
+  rangeStart = date_deb,
+  rangeEnd = date_fin,
+  rangeStep = "hour",
+  filter = filter_list
+)
+
+res2 <- xtradata_requete_aggregate(
+  typename = typename, key = key,
+  rangeStart = date_deb,
+  rangeEnd = date_fin,
+  rangeStep = "hour",
+  filter = filterJSON
+)
+
+# on vérifie que les résultats sont identiques
+all.equal(res1, res2)
+
+```
+
+### Parametre rangeFilter
+
+Le paramètre rangeFilter peut également s'écrire de deux façons, de manière identique au paramètre filter
+
+```{r rangeFilterAggregate}
+
+rangeFilter_list <- list(
+  "hours" = 5:6,
+  "days" = 1:7,
+  "publicHolidays" = FALSE
+)
+rangeFilterJSON <- '{
+  "hours": [
+    5,6
+  ],
+  "days": [
+    1,2,3,4,5,6,7
+  ],
+  "publicHolidays": false
+}'
+
+
+res1 <- xtradata_requete_aggregate(
+  typename = typename, key = key,
+  rangeStart = date_deb,
+  rangeEnd = date_fin,
+  rangeStep = "hour",
+  filter = filter_list,
+  rangeFilter = rangeFilter_list
+)
+
+res2 <- xtradata_requete_aggregate(
+  typename = typename, key = key,
+  rangeStart = date_deb,
+  rangeEnd = date_fin,
+  rangeStep = "hour",
+  filter = filterJSON,
+  rangeFilter = rangeFilterJSON
+)
+
+# on vérifie que les résultats sont identiques
+all.equal(res1, res2)
+
+```
+
+
+### Parametre attributes
+
+#### Attributes sans précision d'opérateurs d'aggrégation
+
+Dans ce cas les attributs numériques renverront la valeur moyenne et pour les autres types d'attributs, la première valeur sera retournée.
+
+
+```{r attributesAggregate}
+
+attributes_list <- list("gid", "libres")
+attributesArray <- '["gid", "libres"]'
+
+res1 <- xtradata_requete_aggregate(
+  typename = typename, key = key,
+  rangeStart = date_deb,
+  rangeEnd = date_fin,
+  rangeStep = "hour",
+  attributes = attributes_list,
+  filter = filter_list
+)
+
+
+res2 <- xtradata_requete_aggregate(
+  typename = typename, key = key,
+  rangeStart = date_deb,
+  rangeEnd = date_fin,
+  rangeStep = "hour",
+  attributes = attributesArray,
+  filter = filter_list
+)
+
+all.equal(res1, res2)
+
+```
+
+#### Attributes avec précision d'opérateurs d'aggrégation
+
+L'ensemble des opérateurs autorisés sont détaillés dans la [documentation du webservice aggregate](http://data.bordeaux-metropole.fr/geojson/help/#/default/get_aggregate__typename_).
+
+
+```{r attributesAggregateWithOperators}
+
+attributes_key_value_list <- list("etat" = "first", "libres" = "max")
+attributes_key_value_JSON <- '{"etat" : "first", "libres" : "max"}'
+
+res1 <- xtradata_requete_aggregate(
+  typename = typename, key = key,
+  rangeStart = date_deb,
+  rangeEnd = date_fin,
+  rangeStep = "hour",
+  attributes = attributes_key_value_list,
+  filter = filter_list
+)
+
+
+res2 <- xtradata_requete_aggregate(
+  typename = typename, key = key,
+  rangeStart = date_deb,
+  rangeEnd = date_fin,
+  rangeStep = "hour",
+  attributes = attributes_key_value_JSON,
+  filter = filter_list
+)
+
+all.equal(res1, res2)
+
+```
+
+Les filtres sur un même champ doivent être combinés avec les opérateurs "$and", "$or", "$not" (voir les exemples fournis précédemment pour la fonction xtradata_requete_features).
+
+### Parametre group
+
+Par défaut les opérations d'aggrégations sont réalisées en "group by time et gid", c'est à dire qu'on obtient au final autant d'objets unique par plage que d'id différents. 
+Ce paramètre peut être modifié pour appliquer uniquement un "group by time".
+
+```{r groupbyAggregate}
+
+res1 <- xtradata_requete_aggregate(
+  typename = typename, key = key,
+  rangeStart = date_deb,
+  rangeEnd = date_fin,
+  rangeStep = "hour",
+  group = "time+gid",
+  attributes = list("gid", "libres")
+)
+
+
+res2 <- xtradata_requete_aggregate(
+  typename = typename, key = key,
+  rangeStart = date_deb,
+  rangeEnd = date_fin,
+  rangeStep = "hour",
+  group = "time",
+  attributes = list("gid", "libres")
+)
+
+res1_grouped_by_time <- res1 %>%
+  dplyr::group_by(time) %>%
+  dplyr::summarise(libres = mean(libres, na.rm = TRUE))
+
+all.equal(res1_grouped_by_time$libres, res2$libres)
+```
 
