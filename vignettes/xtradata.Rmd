@@ -38,11 +38,17 @@ Pour toute question concernant ce package : y.mansiaux@bordeaux-metropole.fr
 
 # Installation du package
 
-Ce package s'installe à partir des sources du format .tar.gz.
-Veuillez noter que les dépendances suivantes devront également être installées : assertthat, curl, glue, httr, jsonlite, magrittr, purrr.
+Pour l'installation du package les dépendances remotes et git2r sont requises.
+
+Veuillez noter que les dépendances suivantes seront également installées : assertthat, curl, glue, httr, jsonlite, magrittr, purrr.
 
 ```{r, eval = FALSE}
-install.packages("xtradata_xxxx.tar.gz", repos = NULL, type = "source")
+devtools::install_git( 
+  url = https://gitlab.com/bordeaux-metropole-public/r-modules/xtradata.git,
+  ref = "master",
+  force = TRUE,
+  credentials = git2r::cred_user_pass("xtradatauser", "S4ExAmyXxhAxx6Hh_ouT")
+)
 ```
 
 ```{r}
