@@ -1,0 +1,9 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+Ce package permet d'interroger les webservices de l'open data de Bordeaux Métropole.
+
+Merci de consulter la vignette pour une démo complète :) 
