@@ -348,6 +348,6 @@ test_that("Aggregate : tests group renvoie la meme chose", {
     attributes = attributes
   )
 
-  all.equal(res1$libres, res2$libres)
+  expect_true(all.equal(res1$libres, res2$libres))
 
 })

@@ -50,8 +50,9 @@
 #' @importFrom assertthat assert_that is.string
 #' @importFrom glue glue glue_collapse
 #' @importFrom purrr map2 compact vec_depth map_chr
-#' @importFrom httr GET content
+#' @importFrom curl curl_fetch_memory
 #' @importFrom jsonlite fromJSON toJSON
+#' @importFrom geojsonsf geojson_sf
 #' @importFrom utils URLencode
 #'
 #' @references  http://data.bordeaux-metropole.fr/geojson/help/
@@ -371,16 +372,21 @@ xtradata_requete_aggregate <- function(key = NULL,
   url <- glue("{base_url_xtradata_aggregate}{params_encodes_pour_url}")
   if (showURL) print(url)
 
-  request <- suppressWarnings(GET(url))
+  request <- curl_fetch_memory(url)
+
   check_API_results(request)
 
-  response <- content(request, as = "text", encoding = "UTF-8")
+  response <- rawToChar(request$content)
 
-  df <- fromJSON(response, flatten = TRUE)$features
+  df <- try(geojson_sf(response), silent = TRUE)
 
-  if (length(df) > 0) {
-    colnames(df) <- map_chr(colnames(df), ~ gsub(x = ., pattern = "properties.", replacement = ""))
+  if(inherits(df, "try-error")) { # si on a pas de colonne géographique, on ne traite pas les résultats comme du geojson
+    df <- fromJSON(response, flatten = TRUE)$features
+
+    if (length(df) > 0) {
+      colnames(df) <- map_chr(colnames(df), ~ gsub(x = ., pattern = "properties.", replacement = ""))
+    }
   }
+  return(df)
 
-  return(as.data.frame(df))
 }
