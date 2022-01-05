@@ -9,7 +9,7 @@ test_that("recuperation de la couche des parkings hors voirie", {
 
   req <- xtradata_requete_features(typename  = "ST_PARK_P", key = MaCle)
 
-  expect_s3_class(req, "data.frame")
+  expect_s3_class(req, c("sf","data.frame"))
 
 })
 

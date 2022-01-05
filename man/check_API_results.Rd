@@ -16,6 +16,6 @@ un booleen (status = 200 : TRUE / FALSE)
 Checks that the result is a 200 status code.
 }
 \examples{
-requete <- httr::GET("http://www.google.com")
+requete <- curl::curl_fetch_memory("http://www.google.com")
 check_API_results(requete = requete)
 }
