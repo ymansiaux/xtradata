@@ -25,7 +25,7 @@ usethis::use_test(name = "xtradata_requete_aggregate")
 usethis::use_test(name = "get_latitude_longitude")
 
 #
-vignettes <- FALSE
+vignettes <- TRUE
 attachment::att_amend_desc()
 devtools::check(vignettes = vignettes)
 devtools::build(vignettes = vignettes)

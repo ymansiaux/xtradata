@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Xtradata Bordeaux Métropole
 
-Cette documentation concerne la version 3.0 du package.
+Cette documentation concerne la version 0.4.0 du package.
 
 Ce package propose d'interroger les webservices xtradata de Bordeaux Métropole.
 
@@ -40,7 +40,7 @@ Pour toute question concernant ce package : y.mansiaux@bordeaux-metropole.fr
 
 Pour l'installation du package les dépendances remotes et git2r sont requises.
 
-Veuillez noter que les dépendances suivantes seront également installées : assertthat, curl, glue, httr, jsonlite, magrittr, purrr.
+Veuillez noter que les dépendances suivantes seront également installées : assertthat, curl, geojsonsf, glue, jsonlite, magrittr, purrr, utils.
 
 ```{r, eval = FALSE}
 devtools::install_git( 
@@ -87,15 +87,7 @@ requete <- xtradata_requete_features(key = key, typename = typename)
 head(requete)
 ```
 
-
-Une fonction permet de récupérer les coordonnées x,y présents dans la colonne geometry.coordinates pour obtenir un data.frame avec 2 colonnes : latitude et longitude
-
-```{r}
-lat_long <- get_latitude_longitude(requete)
-
-head(lat_long)
-```
-
+Si le résultat de la requête contient une composante géographique, l'objet renvoyé sera de classe "sf", dans le cas contraire l'objet sera un data.frame.
 
 ### Parametre filter
 
