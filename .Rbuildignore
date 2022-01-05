@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^xtradata\.Rproj$
 ^\.Rproj\.user$
 ^dev_history\.R$
