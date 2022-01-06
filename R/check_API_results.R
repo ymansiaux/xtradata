@@ -13,6 +13,6 @@
 check_API_results <- function(requete) {
   assert_that(
     requete$status_code == 200,
-    msg = paste("The API request returned an error, API response code :", status_code(requete))
+    msg = paste("The API request returned an error, API response code :", requete$status_code)
   )
 }
