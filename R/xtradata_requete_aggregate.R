@@ -356,11 +356,22 @@ xtradata_requete_aggregate <- function(key = NULL,
   ) %>% compact()
 
   params_encodes_pour_url <- map2(parametres_requete, names(parametres_requete), function(param, param_name) {
+
     if (vec_depth(param) == 1 & length(param) == 1) {
       # on gere ici les elements à un niveau clé <-> valeur : ex key = MaCle ou rangeStart = une date quelconque
       parametre_encode <- param
-    } else {
-      # ici element plus complexes, ex les listes avec des sous niveau : les filters ou les rangeStep
+    } else {   # ici element plus complexes, ex les listes avec des sous niveau : les filters ou les rangeStep
+
+      # il y avait un problème avec l'unboxing des éléments contenus dans des $in qui étaient de longueur 1, une retransformation en liste permet de régler le pb
+      if(param_name == "filter") {
+        param <- map(param, function(.x) {
+          if("$in" %in% names(.x)) {
+            .x[[1]] <- as.list(.x[[1]])
+          }
+          return(.x)
+        })
+      }
+
       parametre_encode <- toJSON(param, auto_unbox = TRUE) %>% URLencode()
     }
 
