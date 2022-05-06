@@ -27,7 +27,8 @@ test_that("Features : passage d'un seul paramètre en filter", {
 
   res1 <- xtradata_requete_features(
     typename = "PC_CAPTV_P", key = MaCle,
-    filter = filter
+    filter = filter,
+    showURL = TRUE
   )
 
   res2 <- xtradata_requete_features(
@@ -42,6 +43,37 @@ test_that("Features : passage d'un seul paramètre en filter", {
   expect_equal(dim(res1), dim(res2))
   expect_true(all.equal(res1, res2))
 })
+
+test_that("Features : test du fonctionnement d'une requete avec un filter qui contient un $in et derriere une seule valeur", {
+  skip_if_not(curl::has_internet(), "Pas de connexion internet")
+
+  MaCle <- Sys.getenv("XTRADATA_KEY")
+
+  filter <- list(
+    "ident" = list("$in" = "Z203CT7")
+  )
+
+  filter2 <- list(
+    "ident" = "Z203CT7"
+  )
+
+
+  res1 <- xtradata_requete_features(
+    typename = "PC_CAPTV_P", key = MaCle,
+    filter = filter
+  )
+
+  res2 <- xtradata_requete_features(
+    typename = "PC_CAPTV_P", key = MaCle,
+    filter = filterJSON
+  )
+
+  expect_equal(nrow(res1),1)
+  expect_equal(as.Date(res1$mdate), Sys.Date())
+  expect_equal(unique(res1$gid), 2451)
+})
+
+
 
 test_that("Features : passage de attributes en vecteur R et en array resultats identiques", {
 
